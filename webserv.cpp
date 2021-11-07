@@ -68,7 +68,7 @@ int     main(int ac, char **av)
 {
     //creat a socket
     int server_fd;
-    if (!(server_fd = socket(AF_INET, SOCK_STREAM, 0)))
+    if (!(server_fd = socket(AF_INET, SOCK_STREAM, 0))) //STREAM ==> TCP
     {
         perror("In socket");
         exit(EXIT_FAILURE);
@@ -113,7 +113,7 @@ int     main(int ac, char **av)
         
         char buffer[1000] = {0};
         valread = read( new_socket , buffer, 30000);
-        std::cout << buffer << std::endl;
+        // std::cout << buffer << std::endl;
         write(new_socket , all.c_str() , strlen(all.c_str()));
         printf("------------------Hello message sent-------------------\n");
         close(new_socket);
