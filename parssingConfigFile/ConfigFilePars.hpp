@@ -1,37 +1,22 @@
 #ifndef CONFIGFILEPARSE_HPP
 #define CONFIGFILEPARSE_HPP
-#include <stdio.h>
-#include <iostream>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <netinet/in.h>
-#include <string.h>
-#include <netdb.h>
-#include <vector>
-#include <string>
-#include <map>
-#include <arpa/inet.h> // for sockaddr_in and inet_ntoa()
-#include <iostream>
-#include <fstream>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdlib.h>
-#include <algorithm>
+#include "../headers.hpp"
 
 #define FILE_EXTENTION "conf"
 #define INVALIDE_FILE_NAME "Error: Invalide File Name"
 #define COMMENTV1 '#'
 #define COMMENTV2 ';'
-
+#define CONFIG_FILE_PATH "config/"
 class ConfigFilePars
 {
 private:
     std::string file_name;
     std::vector<std::string> file_content;
+
+    std::vector<int> ports;
+    std::string server_name;
+    std::map<int, std::string> error_page;
+    std::string root_path;
 public:
     ConfigFilePars(/* args */);
     ConfigFilePars(int ac, char **av);
@@ -42,6 +27,12 @@ public:
     void    ft_strtrim(std::string &str);
     void    remove_comments(std::string &str, char c);
     void    file_check();// check the inside of the server is valide ?
+
+    void    get_elements();
+    void    get_ports();
+    void    get_server_name();
+    void    get_error_pages();
+    void    get_root_path();
 
     class FILE_NAME_EXEPTION : public std::exception
     {
@@ -55,8 +46,14 @@ void    _print(T &var, std::string type)
 {
     if(type == "vector")
     {
-        for (int i = 0; i < var.size(); i++)
+        for (size_t i = 0; i < var.size(); i++)
             std::cout << var[i] << std::endl;
+    }
+    else if (type == "string")
+    {
+        for (size_t i = 0; i < var.size(); i++)
+            std::cout << var[i];
+        std::cout << std::endl;
     }
 }
 
