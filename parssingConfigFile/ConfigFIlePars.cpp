@@ -5,96 +5,66 @@ ConfigFilePars::ConfigFilePars()
     std::cout << "Default constractor called !" << std::endl;   
 }
 
+void    ConfigFilePars::get_servers_start()
+{
+    int _start = 0;
+    int _end = 0;
+    bool BraceIsOpen = false;
+    bool BraceIsclosed = false;
+    // if(file_content[0].compare(SERVER) != 1)
+    // {
+    //     std::cout << "Error: Bad file" << std::endl;
+    //     exit(0);
+    // }
+    // else
+    // {
+        sData var;
+        for (size_t i = 0; i < file_content.size(); i++)
+        {
+            if (file_content[i].compare(SERVER) && file_content[i + 1].compare(OPEN_BRACE) == 1)
+            {
+                _start = i;
+                BraceIsOpen = true;
+            }
+            else if (file_content[i].compare(SERVER) == 1 && file_content[i + 1].compare(OPEN_BRACE) != 1)
+            {
+                std::cout << "Error: bad file : line -> " << file_content[i] << std::endl;
+                exit(0);
+            }
+            if (file_content[i].compare(LISTEN) == 1)
+            {
+                std::string tmp = file_content[i];
+
+                size_t port = tmp.
+                // var.setPort(std::stoi(&file_content[i][port]));
+                std::cout << "port = " << port << ", " << &file_content[i][2] << std::endl;
+            }
+        }
+    // }
+    // std::vector<int> ports = var.getPort();
+    // _print(ports, "vector");
+}
+
 ConfigFilePars::ConfigFilePars(int ac, char **av)
 {
     this->Arguments_checker(ac, av);
     this->get_file_content();
     this->file_check();
+    this->get_servers_start(); // get the line when we start a server and the line of the end of every server we created
     this->get_elements();
 }
 
-void    ConfigFilePars::get_ports()
+void    ConfigFilePars::add_server(sData &var)
 {
-    for (size_t i = 0; i < this->file_content.size() ; i++)
-    {
-        std::string tmp = this->file_content[i];
-        if (!tmp.find("listen"))
-        {
-            tmp.erase(0, 7);
-            ft_strtrim(tmp);
-            this->ports.push_back(std::stoi(tmp));
-        }
-    }
-    _print(this->ports, "vector");
-}
-
-void    ConfigFilePars::get_root_path()
-{
-    for (size_t i = 0; i < this->file_content.size() ; i++)
-    {
-        std::string tmp = this->file_content[i];
-        if (!tmp.find("root"))
-        {
-            tmp.erase(0, 4);
-            ft_strtrim(tmp);
-            this->root_path = tmp;
-        }
-    }
-    _print(this->root_path, "string");
-}
-
-void    ConfigFilePars::get_error_pages()
-{
-    for (size_t i = 0; i < this->file_content.size() ; i++)
-    {
-        std::string tmp = this->file_content[i];
-        if (!tmp.find("error_page"))
-        {
-            tmp.erase(0, 10);
-            ft_strtrim(tmp);
-            int error_num = std::stoi(tmp);
-            tmp.erase(0, 4);
-            ft_strtrim(tmp);
-            std::string error_path = tmp;
-            this->error_page.insert(std::pair<int , std::string>(error_num, tmp));
-        }
-    }
-    for (std::map<int , std::string>::iterator it = this->error_page.begin(); it != this->error_page.end(); ++it)
-        std::cout << "key = " << it->first << ", value = " << it->second << std::endl;
-}
-
-
-void    ConfigFilePars::get_server_name()
-{
-    for (size_t i = 0; i < this->file_content.size() ; i++)
-    {
-        std::string tmp = this->file_content[i];
-        if (!tmp.find("server_name"))
-        {
-            tmp.erase(0, 11);
-            ft_strtrim(tmp);
-            this->server_name = tmp;
-        }
-    }
-    std::cout << this->server_name << std::endl;
+    this->server.push_back(var);
 }
 
 //get elements of the config file elemet by element
 void    ConfigFilePars::get_elements()
 {
-    std::cout << "Ports :" << std::endl;
-    this->get_ports();
-    std::cout << std::endl;
-    std::cout << "Server_name :" << std::endl;
-    this->get_server_name();
-    std::cout << std::endl;
-    std::cout << "error_pages :" << std::endl;
-    this->get_error_pages();
-    std::cout << std::endl;
-    std::cout << "root :" << std::endl;
-    // this->get_host();
-    this->get_root_path();
+    sData var;
 
+    this->add_server(var);
 }
 
 //check the validiti of argument normale usage [./webserv ./config.conf]
@@ -113,12 +83,6 @@ void    ConfigFilePars::Arguments_checker(int ac, char **av)
             std::cout << INVALIDE_FILE_NAME << std::endl;
             exit(1);
         }
-    }
-    else
-    {
-        std::cout << "Error: bad arguments" << std::endl;
-        std::cout << "Usage : ./$(PROGRAMME_NAME) $(CONFIG_FILE)" << std::endl;
-        exit(0);
     }
 }
 
@@ -171,18 +135,19 @@ void    ConfigFilePars::get_file_content()
 
     while(std::getline(file, tmp))
     {
+        if (tmp.empty())
+            continue;
         if(tmp.find(COMMENTV1) != std::string::npos)
             remove_comments(tmp, COMMENTV1);
-        if(tmp.find(COMMENTV2) != std::string::npos)
-            remove_comments(tmp, COMMENTV2);
         ft_strtrim(tmp);
         if(tmp[0] == COMMENTV1 || tmp[0] == COMMENTV2 || isspace(tmp[0]))
             continue;
         this->file_content.push_back(tmp);
     }
-    // _print(this->file_content, "vector");
+    _print(this->file_content, "vector");
 }
 
 ConfigFilePars::~ConfigFilePars()
 {
 }
+//

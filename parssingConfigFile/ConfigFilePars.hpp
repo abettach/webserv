@@ -7,16 +7,20 @@
 #define COMMENTV1 '#'
 #define COMMENTV2 ';'
 #define CONFIG_FILE_PATH "config/"
+#define SERVER "server;"
+#define LISTEN "listen"
+#define OPEN_BRACE "{"
+#include "sData.hpp"
+
+class sData;
+
 class ConfigFilePars
 {
 private:
-    std::string file_name;
-    std::vector<std::string> file_content;
-
-    std::vector<int> ports;
-    std::string server_name;
-    std::map<int, std::string> error_page;
-    std::string root_path;
+        std::vector<sData> server;
+        std::string file_name;
+        std::vector<std::string> file_content;
+        std::vector<int> servers_num;
 public:
     ConfigFilePars(/* args */);
     ConfigFilePars(int ac, char **av);
@@ -33,6 +37,9 @@ public:
     void    get_server_name();
     void    get_error_pages();
     void    get_root_path();
+    void    get_servers_start();
+    void    add_server(sData &var);
+
 
     class FILE_NAME_EXEPTION : public std::exception
     {
@@ -58,4 +65,4 @@ void    _print(T &var, std::string type)
 }
 
 
-#endif
+#endif//

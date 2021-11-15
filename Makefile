@@ -1,10 +1,11 @@
 NAME = webserv
-FLAGS = -Wall -Wextra -Werror -std=c++98
+FLAGS = #-Wall -Wextra -Werror -std=c++98
 CC = clang++
 RM = rm -rf
 
 SRCS = parssingConfigFile/main.cpp \
-		parssingConfigFile/ConfigFIlePars.cpp
+		parssingConfigFile/ConfigFIlePars.cpp \
+		parssingConfigFile/sData.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
@@ -20,7 +21,7 @@ test:
 		make re
 		@make clean
 		@echo " "
-		@./webserv | cat -e
+		@./webserv config/config.conf| cat -e
 
 clean:
 	@$(RM) $(OBJS)
