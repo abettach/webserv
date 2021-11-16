@@ -18,6 +18,17 @@ class sData
 
         void    setPort(int port);
         std::vector<int>  getPort();
+        void    printPortData();
+        void    clear_all(sData &sv);
+        void    setErrorPage(std::string &tmp, int &error_num);
+        void    printErrorPagesData();
+        void    setRootDir(std::string &tmp);
+        void    printServerData();
+        void    setServerName(std::string &tmp);
+     void    setHost(std::string &tmp);
+     void    setClienBodySize(int &tmp);
+
+
 };
 
 #endif

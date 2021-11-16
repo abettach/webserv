@@ -7,9 +7,16 @@
 #define COMMENTV1 '#'
 #define COMMENTV2 ';'
 #define CONFIG_FILE_PATH "config/"
-#define SERVER "server;"
+#define SERVER "server"
+#define LOCATION "location"
 #define LISTEN "listen"
+#define ERROR_PAGE "error_page"
+#define SERVER_NAME "server_name"
+#define CLIENT_BODY_SIZE "client_max_body_size"
+#define HOST "host"
+#define ROOT_DIR "root"
 #define OPEN_BRACE "{"
+#define CLOSE_BRACE "}"
 #include "sData.hpp"
 
 class sData;
@@ -21,6 +28,7 @@ private:
         std::string file_name;
         std::vector<std::string> file_content;
         std::vector<int> servers_num;
+        std::vector<int> servers_index;
 public:
     ConfigFilePars(/* args */);
     ConfigFilePars(int ac, char **av);
@@ -39,13 +47,19 @@ public:
     void    get_root_path();
     void    get_servers_start();
     void    add_server(sData &var);
+    std::vector<std::string> ft_split(std::string const &str, char c);
+    void    get_servers_index();
+    void    clear_sv(sData &sv);
 
 
     class FILE_NAME_EXEPTION : public std::exception
     {
         const char *what() const throw();
     };
-
+    class ERROR_EXEPTION : public std::exception
+    {
+        const char *what() const throw();
+    };
 };
 
 template <typename T>
