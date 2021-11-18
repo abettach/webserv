@@ -8,10 +8,6 @@ void    sData::setPort(int port)
 {
     this->ports.push_back(port);
 }
-std::vector<int>    sData::getPort()
-{
-    return this->ports;
-}
 
 void    sData::printServerData()
 {
@@ -30,7 +26,7 @@ void    sData::printServerData()
 
 void    sData::setErrorPage(std::string &tmp, int &error_num)
 {
-    this->error_pages.insert({error_num, tmp});
+    this->error_pages.insert(std::pair<int, std::string>(error_num, tmp));
 }
 
 void    sData::setRootDir(std::string &tmp)
@@ -53,6 +49,37 @@ void    sData::setClienBodySize(int &tmp)
     this->client_max_body_size = tmp;
 }
 
+
+std::vector<int>    sData::getPort()
+{
+    return this->ports;
+}
+
+std::map<int, std::string>    sData::getErrorPage()
+{
+    return (this->error_pages);
+}
+
+std::string    sData::getRootDir()
+{
+    return (this->root_dir);
+}
+
+std::string    sData::getServerName()
+{
+    return (this->server_name);
+}
+
+std::string    sData::getHost()
+{
+    return (this->host);
+}
+
+int    sData::getClienBodySize()
+{
+    return (this->client_max_body_size);
+}
+
 void    sData::clear_all(sData &sv)
 {
     std::cout << " im in clear " << std::endl;
@@ -61,6 +88,7 @@ void    sData::clear_all(sData &sv)
     this->ports.erase(ports.begin(),ports.end());
     this->ports.clear();
 }
+
 sData::~sData()
 {
     std::cout << "Data Destractor called" << std::endl;

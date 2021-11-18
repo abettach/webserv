@@ -25,8 +25,14 @@ class sData
         void    setRootDir(std::string &tmp);
         void    printServerData();
         void    setServerName(std::string &tmp);
-     void    setHost(std::string &tmp);
-     void    setClienBodySize(int &tmp);
+        void    setHost(std::string &tmp);
+        void    setClienBodySize(int &tmp);
+        std::map<int, std::string>   getErrorPage();
+        std::string    getRootDir();
+        std::string    getServerName();
+        std::string    getHost();
+        int            getClienBodySize();
+
 
 
 };

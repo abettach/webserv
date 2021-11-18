@@ -74,7 +74,7 @@ void    ConfigFilePars::get_elements()
         end = servers_index[i + 1];
         // if (file_content[start] != SERVER)
         //     throw ERROR_EXEPTION();
-        start =+ 2;
+        start += 2;
         while (start < end)
         {
             std::string tmp = this->file_content[start];
