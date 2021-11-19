@@ -29,6 +29,7 @@ private:
         std::vector<std::string> file_content;
         std::vector<int> servers_num;
         std::vector<int> servers_index;
+        void	(ConfigFilePars::*pointer[6])(std::string &, sData &);
 public:
     ConfigFilePars(/* args */);
     ConfigFilePars(int ac, char **av);
@@ -50,7 +51,12 @@ public:
     std::vector<std::string> ft_split(std::string const &str, char c);
     void    get_servers_index();
     void    clear_sv(sData &sv);
-
+    void    run_ports(std::string &tmp, sData &sv);
+    void    run_error_pages(std::string &tmp, sData &sv);
+    void    run_root_dir(std::string &tmp, sData &sv);
+    void    run_server_name(std::string &tmp, sData &sv);
+    void    run_host(std::string &tmp, sData &sv);
+    void    run_body_size(std::string &tmp, sData &sv);
 
     class FILE_NAME_EXEPTION : public std::exception
     {

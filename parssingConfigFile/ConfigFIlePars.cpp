@@ -5,46 +5,6 @@ ConfigFilePars::ConfigFilePars()
     std::cout << "Default constractor called !" << std::endl;   
 }
 
-// void    ConfigFilePars::get_servers_start()
-// {
-//     int _start = 0;
-//     int _end = 0;
-//     int validBrace = 0;
-//     bool BraceIsOpen = false;
-
-//     for (size_t i = 0; i < file_content.size(); i++)
-//     {
-//         if(file_content[i].find(OPEN_BRACE) != std::string::npos)
-//         {
-//             if (file_content[i - 1] != SERVER && file_content[i - 1] != LOCATION)
-//             {
-//                 std::cout << "ERROR: Braces problemse check line ->" << file_content[i] << std::endl;
-//                 exit(EXIT_FAILURE);
-//             }
-//             validBrace++;
-//         }
-//         else if (file_content[i].find(CLOSE_BRACE) != std::string::npos)
-//         {
-//             validBrace--;
-//             if (validBrace < 0)
-//             {
-//                 std::cout << "Error: Braces probleme check line ->" << file_content[i]<< std::endl;
-//                 exit(EXIT_FAILURE);
-//             }
-//         }
-//         if(file_content[i].compare(SERVER) == 0)
-//         {
-//             BraceIsOpen = true;
-
-//         }
-//     }
-// }
-
-// void    ConfigFilePars::get_all_servers()
-// {
-
-// }
-
 void    ConfigFilePars::get_servers_index()
 {
     for(size_t i = 0; i < file_content.size(); i++)
@@ -61,78 +21,88 @@ void    ConfigFilePars::clear_sv(sData &sv)
     sData new_sv;
     sv = new_sv;
 }
+
+void    ConfigFilePars::run_ports(std::string &tmp, sData &sv)
+{
+    tmp.erase(0,strlen(LISTEN));
+    ft_strtrim(tmp);
+    sv.setPort(std::stoi(tmp));
+    tmp.erase(0,tmp.length());
+}
+void    ConfigFilePars::run_error_pages(std::string &tmp, sData &sv)
+{
+    tmp.erase(0,strlen(ERROR_PAGE));
+    ft_strtrim(tmp);
+    int error_num = std::stoi(tmp);
+    std::string num = std::to_string(std::stoi(tmp));
+    tmp.erase(0,strlen(num.c_str()));
+    ft_strtrim(tmp);
+    sv.setErrorPage(tmp, error_num);
+}
+void    ConfigFilePars::run_root_dir(std::string &tmp, sData &sv)
+{
+    tmp.erase(0,strlen(ROOT_DIR));
+    ft_strtrim(tmp);
+    sv.setRootDir(tmp);
+}
+void    ConfigFilePars::run_server_name(std::string &tmp, sData &sv)
+{
+    tmp.erase(0,strlen(SERVER_NAME));
+    ft_strtrim(tmp);
+    sv.setServerName(tmp);
+}
+void    ConfigFilePars::run_host(std::string &tmp, sData &sv)
+{
+    tmp.erase(0,strlen(HOST));
+    ft_strtrim(tmp);
+    sv.setHost(tmp);
+}
+void    ConfigFilePars::run_body_size(std::string &tmp, sData &sv)
+{
+    tmp.erase(0,strlen(CLIENT_BODY_SIZE));
+    ft_strtrim(tmp);
+    int num = std::stoi(tmp);
+    sv.setClienBodySize(num);
+}
+
+int     isValide(std::string tmp)
+{
+    int i = -1;
+    return  (i = tmp == LISTEN ? 0 : tmp == HOST ? 1 : tmp == SERVER_NAME ? 2 :
+    tmp == CLIENT_BODY_SIZE ? 3 : tmp == ERROR_PAGE ? 4 : tmp == ROOT_DIR ? 5 : -1);
+}
 //get elements of the config file elemet by element
 void    ConfigFilePars::get_elements()
 {
-    int start;
-    int end;
-    size_t i = 0;
+    int start, end;
+    std::string arr[6] = {LISTEN, HOST, SERVER_NAME, CLIENT_BODY_SIZE, ERROR_PAGE, ROOT_DIR};
+    this->pointer[0] = &ConfigFilePars::run_ports;
+    this->pointer[1] = &ConfigFilePars::run_host;
+    this->pointer[2] = &ConfigFilePars::run_server_name;
+    this->pointer[3] = &ConfigFilePars::run_body_size;
+    this->pointer[4] = &ConfigFilePars::run_error_pages;
+    this->pointer[5] = &ConfigFilePars::run_root_dir;
+
     sData sv = sData();
-    while (i < servers_index.size())
+    for (size_t i = 0;i < servers_index.size();)
     {
-        start = servers_index[i];
+        start = servers_index[i] + 1;
         end = servers_index[i + 1];
-        // if (file_content[start] != SERVER)
-        //     throw ERROR_EXEPTION();
-        start += 2;
-        while (start < end)
-        {
-            std::string tmp = this->file_content[start];
-            if (tmp.find(LISTEN) != std::string::npos)
-            {
-                tmp.erase(0,strlen(LISTEN));
-                ft_strtrim(tmp);
-                sv.setPort(std::stoi(tmp));
-                tmp.erase(0,tmp.length());
-            }
-            else if (tmp.find(ERROR_PAGE) != std::string::npos)
-            {
-                tmp.erase(0,strlen(ERROR_PAGE));
-                ft_strtrim(tmp);
-                int error_num = std::stoi(tmp);
-                std::string num = std::to_string(std::stoi(tmp));
-                tmp.erase(0,strlen(num.c_str()));
-                ft_strtrim(tmp);
-                sv.setErrorPage(tmp, error_num);
-            }
-            else if (tmp.find(ROOT_DIR) != std::string::npos)
-            {
-                tmp.erase(0,strlen(ROOT_DIR));
-                ft_strtrim(tmp);
-                sv.setRootDir(tmp);
-            }
-            else if (tmp.find(SERVER_NAME) != std::string::npos)
-            {
-                tmp.erase(0,strlen(SERVER_NAME));
-                ft_strtrim(tmp);
-                sv.setServerName(tmp);
-            }
-            else if (tmp.find(HOST) != std::string::npos)
-            {
-                tmp.erase(0,strlen(HOST));
-                ft_strtrim(tmp);
-                sv.setHost(tmp);
-            }
-            else if (tmp.find(CLIENT_BODY_SIZE) != std::string::npos)
-            {
-                tmp.erase(0,strlen(CLIENT_BODY_SIZE));
-                ft_strtrim(tmp);
-                int num = std::stoi(tmp);
-                sv.setClienBodySize(num);
-            }
-            start++;
-        }
+        while (++start < end)
+            for (size_t count = 0; count < 6; count++)
+                if (this->file_content[start].find(arr[count]) != std::string::npos)
+                {
+                    (this->*pointer[count])(this->file_content[start], sv);
+                    break;
+                }
         this->add_server(sv);
-        sv.clear_all(sv);
         i+=2;
     }
-    i = 0;
+    int i = 0;
     while (i < this->server.size())
     {
-        std::cout << "*************************************" << std::endl;
-        std::cout << "************Server Number [" << i << "]*************" << std::endl;
-        this->server[i].printServerData();
-        std::cout << std::endl << "*************************************" << std::endl;
+        std::cout << "*************************************" << std::endl; std::cout << "************Server Number [" << i << "]*************" << std::endl;
+        this->server[i].printServerData(); std::cout << std::endl << "*************************************" << std::endl;
         i++;
     }
 }
