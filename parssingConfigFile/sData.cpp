@@ -80,6 +80,25 @@ int    sData::getClienBodySize()
     return (this->client_max_body_size);
 }
 
+//****************Location*********************
+
+// void    sData::get_location_autoindex(std::string &tmp, location &sv_loc)
+// {
+//     sv_loc.setAutoIndex(tmp);
+// }
+// void    sData::get_location_index(std::string &tmp, location &sv_loc)
+// {
+
+// }
+// void    sData::get_allow_methods(std::string &tmp, location &sv_loc)
+// {
+
+// }
+// void    sData::get_fastcgi_pass(std::string &tmp, location &sv_loc)
+// {
+
+// }
+
 void    sData::clear_all(sData &sv)
 {
     std::cout << " im in clear " << std::endl;
@@ -87,6 +106,15 @@ void    sData::clear_all(sData &sv)
         this->ports.pop_back();
     this->ports.erase(ports.begin(),ports.end());
     this->ports.clear();
+    this->host.erase(host.begin(), host.end());
+    this->host.clear();
+    this->server_name.erase(server_name.begin(), server_name.end());
+    this->server_name.clear();
+    this->client_max_body_size = -1;
+    this->error_pages.erase(error_pages.begin(), error_pages.end());
+    this->error_pages.clear();
+    this->root_dir.erase(root_dir.begin(), root_dir.end());
+    this->root_dir.clear();
 }
 
 sData::~sData()

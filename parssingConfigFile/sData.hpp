@@ -1,6 +1,10 @@
 #ifndef SDATA_HPP
 #define SDATA_HPP
+
 #include "ConfigFilePars.hpp"
+#include "location.hpp"
+
+class loc;
 
 class sData
 {
@@ -11,9 +15,9 @@ class sData
         int client_max_body_size;
         std::map<int, std::string> error_pages;
         std::string root_dir;
-        // location var;
+        std::vector<location> locat;
     public:
-        sData(/* args */);
+        sData();
         ~sData();
 
         void    setPort(int port);
@@ -32,9 +36,9 @@ class sData
         std::string    getServerName();
         std::string    getHost();
         int            getClienBodySize();
-
-
-
+        void    get_location_autoindex(std::string &, location &);
+        void    get_location_index(std::string &, location &);
+        void    get_allow_methods(std::string &, location &);
+        void    get_fastcgi_pass(std::string &, location &);
 };
-
 #endif

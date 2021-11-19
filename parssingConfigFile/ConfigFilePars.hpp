@@ -14,12 +14,19 @@
 #define SERVER_NAME "server_name"
 #define CLIENT_BODY_SIZE "client_max_body_size"
 #define HOST "host"
+#define AUTOINDEX "autoindex"
+#define INDEX "INDEX"
+#define ALLOW_METHODS "allow_methods"
+#define FASTCGI_PASS "fastcgi_pass"
 #define ROOT_DIR "root"
 #define OPEN_BRACE "{"
 #define CLOSE_BRACE "}"
 #include "sData.hpp"
+#include "location.hpp"
+// #include "location.hpp"
 
 class sData;
+class location;
 
 class ConfigFilePars
 {
@@ -57,7 +64,7 @@ public:
     void    run_server_name(std::string &tmp, sData &sv);
     void    run_host(std::string &tmp, sData &sv);
     void    run_body_size(std::string &tmp, sData &sv);
-
+    void    run_location(int &start, int end, sData &sv);
     class FILE_NAME_EXEPTION : public std::exception
     {
         const char *what() const throw();
