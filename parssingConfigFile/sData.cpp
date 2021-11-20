@@ -2,26 +2,15 @@
 
 sData::sData(/* args */)
 {
+    this->client_max_body_size = -1;
+    this->server_name = "";
+    this->host = "";
+    this->root_dir = "";
 }
 
 void    sData::setPort(int port)
 {
     this->ports.push_back(port);
-}
-
-void    sData::printServerData()
-{
-    std::cout << "ports = {";
-    for (size_t i = 0; i < this->ports.size(); i++)
-        std::cout << this->ports[i] << ", ";
-    std::cout << "}" << std::endl;
-    std::cout << "host = " << this->host << std::endl;
-    std::cout << "server_name = " << this->server_name << std::endl;
-    std::cout << "Client Max body size = " << this->client_max_body_size << std::endl;
-    std::cout << "root = " << this->root_dir << std::endl;
-    std::cout << "Error_pages :"<<std::endl;
-    for (std::map<int,std::string>::iterator it = this->error_pages.begin(); it != this->error_pages.end(); it++)
-        std::cout << "key = " << it->first << " value = "+ it->second << std::endl;
 }
 
 void    sData::setErrorPage(std::string &tmp, int &error_num)
@@ -82,26 +71,16 @@ int    sData::getClienBodySize()
 
 //****************Location*********************
 
-// void    sData::get_location_autoindex(std::string &tmp, location &sv_loc)
-// {
-//     sv_loc.setAutoIndex(tmp);
-// }
-// void    sData::get_location_index(std::string &tmp, location &sv_loc)
-// {
-
-// }
-// void    sData::get_allow_methods(std::string &tmp, location &sv_loc)
-// {
-
-// }
-// void    sData::get_fastcgi_pass(std::string &tmp, location &sv_loc)
-// {
-
-// }
+void sData::ft_strtrim(std::string &str)
+{
+    while (isspace(str.front()))
+        str.erase(0, 1);
+    while (isspace(str.back()))
+        str.erase(str.length() - 1, 1);
+}
 
 void    sData::clear_all(sData &sv)
 {
-    std::cout << " im in clear " << std::endl;
     for(;ports.size();)
         this->ports.pop_back();
     this->ports.erase(ports.begin(),ports.end());
@@ -119,7 +98,47 @@ void    sData::clear_all(sData &sv)
 
 sData::~sData()
 {
-    std::cout << "Data Destractor called" << std::endl;
     ports.clear();
     error_pages.clear();
+}
+
+void    sData::addLocation(location &sv_loc)
+{
+    this->locat.push_back(sv_loc);
+}
+
+void    sData::clearLocation(location &sv_loc)
+{
+    sv_loc.clearAll();
+}
+
+void    sData::printServerData()
+{
+    std::cout << "\e[1;31mports                = \e[1;32m";
+    for (size_t i = 0; i < this->ports.size(); i++)
+        std::cout << "|" << this->ports[i] << "|";
+    std::cout << std::endl;
+    std::cout << "\e[1;31mhost                 = \e[1;32m" << this->host << std::endl;
+    std::cout << "\e[1;31mserver_name          = \e[1;32m" << this->server_name << std::endl;
+    std::cout << "\e[1;31mClient Max body size = \e[1;32m" << this->client_max_body_size << std::endl;
+    std::cout << "\e[1;31mroot                 = \e[1;32m" << this->root_dir << std::endl;
+    std::cout << "\e[1;31mError_pages :"<<std::endl;
+    for (std::map<int,std::string>::iterator it = this->error_pages.begin(); it != this->error_pages.end(); it++)
+        std::cout << "\e[1;34mkey = \e[1;32m" << it->first << " \e[1;34mvalue = \e[1;32m"+ it->second << std::endl;
+
+    std::cout << "\e[1;33m///////////////////////LOACATION INFORMATION/////////////////\e[1;34m" << std::endl;
+    for (size_t i = 0; i < locat.size(); i++)
+    {
+        std::cout << "\e[1;31mlocation type = '";
+        std::cout << locat[i].getLocationExtention() + "'"<< std::endl;
+        std::cout << "\e[1;34mAutoIndex     = \e[1;32m";
+        std::cout << locat[i].getLocationAutoIndex() << std::endl;
+        std::cout << "\e[1;34mIndex         = \e[1;32m";
+        std::cout << locat[i].getLocationIndex() << std::endl;
+        std::cout << "\e[1;34mfastCgiPass   = \e[1;32m";
+        std::cout << locat[i].getLocationFastCgiPass() << std::endl;
+        std::map<std::string , bool> test;
+        test = locat[i].getLocationAllowedMethods();
+        std::cout << "\e[1;34mGET           = \e[1;32m" << test["GET"] << "\e[1;34m, POST = \e[1;32m" << test["POST"] << "\e[1;34m, DELETE = \e[1;32m" << test["DELETE"] << std::endl;
+    }
 }

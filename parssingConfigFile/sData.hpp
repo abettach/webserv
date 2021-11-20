@@ -40,5 +40,8 @@ class sData
         void    get_location_index(std::string &, location &);
         void    get_allow_methods(std::string &, location &);
         void    get_fastcgi_pass(std::string &, location &);
+        void    ft_strtrim(std::string &str);
+        void    addLocation(location &sv_loc);
+        void    clearLocation(location &sv_loc);
 };
 #endif

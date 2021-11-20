@@ -74,43 +74,62 @@ int     isValide(std::string tmp)
 
 void    ConfigFilePars::run_location(int &start, int end, sData &sv)
 {
-    // location sv_loc = location();
-    // std::string tmp = this->file_content[start];
-    // sv.get_type(tmp, location);
-
-    // for (size_t i = 0; i < end && tmp != CLOSE_BRACE; i++)
-    // {
-    //     if (tmp.find(AUTOINDEX) != std::string::npos)
-    //     {
-    //         sv.get_location_autoindex(tmp, sv_loc);
-    //     }
-    //     else if (tmp.find(INDEX) != std::string::npos)
-    //     {
-    //         sv.get_location_index(tmp, sv_loc);
-    //     }
-    //     else if (tmp.find(ALLOW_METHODS) != std::string::npos)
-    //     {
-    //         sv.get_allow_methods(tmp, sv_loc);
-    //     }
-    //     else if (tmp.find(FASTCGI_PASS) != std::string::npos)
-    //     {
-    //         sv.get_fastcgi_pass(tmp, sv_loc);
-    //     }
-    // }
-    // sv.get_auto_index()
-    // tmp.erase(0,strlen(LOCATION));
-    // ft_strtrim(tmp);
-    // sv.set_location_type(location);
-    // for (size_t i = 0; i < end; i++)
-    // {
-
-    // }
+    location sv_loc = location();
+    std::string tmp_type = this->file_content[start];
+    tmp_type.erase(0, strlen(LOCATION));
+    ft_strtrim(tmp_type);
+    sv_loc.setLocationExtention(tmp_type);
+    for (size_t i = start + 1; i < end; i++)
+    {
+        std::string tmp = this->file_content[i];
+        if (tmp.find(AUTOINDEX) != std::string::npos)
+        {
+            tmp.erase(0,strlen(AUTOINDEX));
+            ft_strtrim(tmp);
+            if (tmp.compare("on") == 1)
+                sv_loc.setLocationAutoIndex(true);
+            else
+                sv_loc.setLocationAutoIndex(false);
+        }
+        else if (tmp.find(INDEX) != std::string::npos)
+        {
+            tmp.erase(0, strlen(INDEX));
+            ft_strtrim(tmp);
+            sv_loc.setLocationIndex(tmp);
+        }
+        else if (tmp.find(FASTCGI_PASS) != std::string::npos)
+        {
+            tmp.erase(0, strlen(FASTCGI_PASS));
+            ft_strtrim(tmp);
+            sv_loc.setLocationFastCgiPass(tmp);
+        }
+        else if (tmp.find(ALLOW_METHODS) != std::string::npos)
+        {
+            std::map<std::string , bool> methodes;
+            tmp.erase(0, strlen(ALLOW_METHODS));
+            ft_strtrim(tmp);
+            std::cout << methodes["GET"] << std::endl;
+            if (tmp.find("GET") != std::string::npos)
+            {
+                methodes.insert(std::pair<std::string, bool>("GET", true));
+                methodes["GET"] = true;
+            }
+            if (tmp.find("POST") != std::string::npos)
+                methodes.insert(std::pair<std::string, bool>("POST", true));
+            if (tmp.find("DELETE") != std::string::npos)
+                methodes.insert(std::pair<std::string, bool>("DELETE", true));
+            sv_loc.setLocationAllowedMethods(methodes);
+        }
+    }
+    sv.addLocation(sv_loc);
+    sv.clearLocation(sv_loc);
 }
 
 //get elements of the config file elemet by element
 void    ConfigFilePars::get_elements()
 {
     int start, end;
+    bool isNotLocation = false;
     std::string arr[6] = {LISTEN, HOST, SERVER_NAME, CLIENT_BODY_SIZE, ERROR_PAGE, ROOT_DIR};
     this->pointer[0] = &ConfigFilePars::run_ports;
     this->pointer[1] = &ConfigFilePars::run_host;
@@ -127,22 +146,29 @@ void    ConfigFilePars::get_elements()
         {
             for (size_t count = 0; count < 6; count++)
             {
+                isNotLocation = false;
                 if (this->file_content[start].find(arr[count]) != std::string::npos)
                 {
+                    isNotLocation = true;
                     (this->*pointer[count])(this->file_content[start], sv);
                     break;
                 }
-                else if (this->file_content[start].find(LOCATION) != std::string::npos)
+            }
+            if (!isNotLocation)
+            {
+                isNotLocation = true;
+                if (this->file_content[start + 1] != OPEN_BRACE)
+                    std::cout << "ERROR: location probleme" << std::endl;
+                else
                 {
-                    if (this->file_content[start + 1] != OPEN_BRACE)
-                        std::cout << "ERROR: location probleme" << std::endl;
-                    else
-                    {
-                        this->run_location(start, end, sv);
-                    }
+                    int locationEND = start;
+                    while (this->file_content[locationEND].find(CLOSE_BRACE) == std::string::npos)
+                        locationEND++;
+                    this->run_location(start, locationEND, sv);
+                    start = locationEND;
+                    locationEND = 0;
                 }
             }
-            
         }
         this->add_server(sv);
         sv.clear_all(sv);
@@ -151,8 +177,16 @@ void    ConfigFilePars::get_elements()
     int i = 0;
     while (i < this->server.size())
     {
-        std::cout << "*************************************" << std::endl; std::cout << "************Server Number [" << i << "]*************" << std::endl;
-        this->server[i].printServerData(); std::cout << std::endl << "*************************************" << std::endl;
+        std::cout<<"\e[4;36m  _____    _____   ______     __    __    _____   ______" << std::endl;
+        std::cout<<" / ____\\  / ___/  (   __ \\    ) )  ( (   / ___/  (   __ \\" << std::endl;
+        std::cout<<"( (___   ( (__     ) (__) )  ( (    ) ) ( (__     ) (__) )" << std::endl;
+        std::cout<<" \\___ \\   ) __)   (    __/    \\ \\  / /   ) __)   (    __/ " << std::endl;
+        std::cout<<"     ) ) ( (       ) \\ \\  _    \\ \\/ /   ( (       ) \\ \\  _ " << std::endl;
+        std::cout<<" ___/ /   \\ \\___  ( ( \\ \\_))    \\  /     \\ \\___  ( ( \\ \\_))" << std::endl;
+        std::cout<<"/____/     \\____\\  )_) \\__/      \\/       \\____\\  )_) \\__/" << std::endl;
+        std::cout<<"                            ["<<i<<"]                            " << std::endl;
+        std::cout << std::endl;
+        this->server[i].printServerData();
         i++;
     }
 }
@@ -164,6 +198,11 @@ ConfigFilePars::ConfigFilePars(int ac, char **av)
     this->file_check();
     this->get_servers_index();
     this->get_elements();
+}
+
+void    ConfigFilePars::add_location(sData &var, location &sv_loc)
+{
+    var.addLocation(sv_loc);
 }
 
 void    ConfigFilePars::add_server(sData &var)

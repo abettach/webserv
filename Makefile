@@ -5,7 +5,8 @@ RM = rm -rf
 
 SRCS = parssingConfigFile/main.cpp \
 		parssingConfigFile/ConfigFIlePars.cpp \
-		parssingConfigFile/sData.cpp
+		parssingConfigFile/sData.cpp \
+		parssingConfigFile/location.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 

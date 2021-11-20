@@ -15,7 +15,7 @@
 #define CLIENT_BODY_SIZE "client_max_body_size"
 #define HOST "host"
 #define AUTOINDEX "autoindex"
-#define INDEX "INDEX"
+#define INDEX "index"
 #define ALLOW_METHODS "allow_methods"
 #define FASTCGI_PASS "fastcgi_pass"
 #define ROOT_DIR "root"
@@ -65,6 +65,7 @@ public:
     void    run_host(std::string &tmp, sData &sv);
     void    run_body_size(std::string &tmp, sData &sv);
     void    run_location(int &start, int end, sData &sv);
+    void    add_location(sData &var, location &sv_loc);
     class FILE_NAME_EXEPTION : public std::exception
     {
         const char *what() const throw();
