@@ -2,7 +2,6 @@
 
 ConfigFilePars::ConfigFilePars()
 {
-    std::cout << "Default constractor called !" << std::endl;   
 }
 
 void    ConfigFilePars::get_servers_index()
