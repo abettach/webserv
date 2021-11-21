@@ -3,10 +3,10 @@ FLAGS = #-Wall -Wextra -Werror -std=c++98
 CC = c++
 RM = rm -rf
 
-SRCS = parssingConfigFile/main.cpp \
-		parssingConfigFile/ConfigFIlePars.cpp \
-		parssingConfigFile/sData.cpp \
-		parssingConfigFile/location.cpp
+SRCS = parss/main.cpp \
+		parss/ConfigFIlePars.cpp \
+		parss/sData.cpp \
+		parss/location.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
@@ -25,7 +25,7 @@ test:
 		@./webserv config/config.conf| cat -e
 
 clean:
-	@$(RM) $(OBJS)
+	@$(RM) parss/*.o
 
 fclean: clean
 	@$(RM) $(NAME)
