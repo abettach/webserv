@@ -25,7 +25,7 @@ test:
 		@./webserv config/config.conf| cat -e
 
 clean:
-	@$(RM) parss/*.o
+	@$(RM) $(OBJS)
 
 fclean: clean
 	@$(RM) $(NAME)

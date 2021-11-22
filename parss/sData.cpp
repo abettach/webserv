@@ -102,9 +102,10 @@ sData::~sData()
     error_pages.clear();
 }
 
-void    sData::addLocation(location &sv_loc)
+void    sData::addLocation(std::map<std::string, location> &sv_loc)
 {
-    this->locat.push_back(sv_loc);
+    std::map<std::string, location>::iterator it = sv_loc.begin();
+    this->locat.insert(std::pair<std::string, location>(it->first, it->second));
 }
 
 void    sData::clearLocation(location &sv_loc)
@@ -127,18 +128,20 @@ void    sData::printServerData()
         std::cout << "\e[1;34mkey = \e[1;32m|" << it->first << "| \e[1;34mvalue = \e[1;32m|"+ it->second << "|" << std::endl;
 
     std::cout << "\e[1;33m///////////////////////LOACATION INFORMATION/////////////////\e[1;34m" << std::endl;
-    for (size_t i = 0; i < locat.size(); i++)
+    std::string arr[4] = {"/", "php", "py", "upload"};
+    size_t i = 0;
+    for (; i < locat.size() ; i++)
     {
         std::cout << "\e[1;31mlocation type = |";
-        std::cout << locat[i].getLocationExtention() << "|" << std::endl;
+        std::cout << locat[arr[i]].getLocationExtention() << "|" << std::endl;
         std::cout << "\e[1;34mAutoIndex     = \e[1;32m|";
-        std::cout << locat[i].getLocationAutoIndex() << "|" << std::endl;
+        std::cout << locat[arr[i]].getLocationAutoIndex() << "|" << std::endl;
         std::cout << "\e[1;34mIndex         = \e[1;32m|";
-        std::cout << locat[i].getLocationIndex() << "|" << std::endl;
+        std::cout << locat[arr[i]].getLocationIndex() << "|" << std::endl;
         std::cout << "\e[1;34mfastCgiPass   = \e[1;32m|";
-        std::cout << locat[i].getLocationFastCgiPass() << "|" << std::endl;
+        std::cout << locat[arr[i]].getLocationFastCgiPass() << "|" << std::endl;
         std::map<std::string , bool> test;
-        test = locat[i].getLocationAllowedMethods();
+        test = locat[arr[i]].getLocationAllowedMethods();
         std::cout << "\e[1;34mGET           = \e[1;32m|" << test["GET"] << "|\e[1;34m, POST = \e[1;32m|" << test["POST"] << "|\e[1;34m, DELETE = \e[1;32m|" << test["DELETE"] << "|" << std::endl;
     }
 }

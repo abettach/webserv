@@ -16,7 +16,8 @@ class sData
         std::map<int, std::string> error_pages;
         std::string root_dir;
     public:
-        std::vector<location> locat;
+        std::map<std::string, location> locat;
+        // std::vector<location> locat;
         sData();
         ~sData();
 
@@ -41,7 +42,8 @@ class sData
         void    get_allow_methods(std::string &, location &);
         void    get_fastcgi_pass(std::string &, location &);
         void    ft_strtrim(std::string &str);
-        void    addLocation(location &sv_loc);
+        void    addLocation(std::map<std::string, location> &sv_loc);
         void    clearLocation(location &sv_loc);
+        
 };
 #endif

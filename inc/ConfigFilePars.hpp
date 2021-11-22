@@ -41,7 +41,6 @@ private:
         void	(ConfigFilePars::*location_pointer[LOCATION_MAX_ELEMENT])(std::string &, location &);
 public:
     std::vector<sData> server;
-    ConfigFilePars(/* args */);
     ConfigFilePars(int ac, char **av);
     ~ConfigFilePars();
 
@@ -70,7 +69,8 @@ public:
     void    locationIndexRun(std::string &tmp, location &sv_loc);
     void    locationFastCgiPassRun(std::string &tmp, location &sv_loc);
     void    locationAllowMethodsRun(std::string &tmp, location &sv_loc);
-
+    location    do_location(int &start, int &end);
+    void    getTypeExtention(std::string &tmp);
     class FILE_NAME_EXEPTION : public std::exception
     {
         const char *what() const throw();

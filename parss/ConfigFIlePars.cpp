@@ -94,15 +94,13 @@ void    ConfigFilePars::locationAllowMethodsRun(std::string &tmp, location &sv_l
     sv_loc.setLocationAllowedMethods(methodes);
 }
 
-void    ConfigFilePars::run_location(int &start, int end, sData &sv)
+location    ConfigFilePars::do_location(int &start, int &end)
 {
+    location sv_loc = location();
     std::string arr[4] = {AUTOINDEX, INDEX, FASTCGI_PASS, ALLOW_METHODS};
     this->location_pointer[0] = &ConfigFilePars::locationAutoIndexRun;
     this->location_pointer[1] = &ConfigFilePars::locationIndexRun;
     this->location_pointer[2] = &ConfigFilePars::locationFastCgiPassRun;
-    this->location_pointer[3] = &ConfigFilePars::locationAllowMethodsRun;
-
-    location sv_loc = location();
     std::string tmp_type = this->file_content[start];
     tmp_type.erase(0, strlen(LOCATION));
     ft_strtrim(tmp_type);
@@ -114,6 +112,30 @@ void    ConfigFilePars::run_location(int &start, int end, sData &sv)
                 (this->*location_pointer[count])(this->file_content[i],sv_loc);
                 break;
             }
+    return sv_loc;
+}
+
+void    ConfigFilePars::getTypeExtention(std::string &tmp)
+{
+    int size = 0;
+    while (tmp[size] != '.' && tmp[size])
+        size++;
+    if (tmp[size] == '.')
+        tmp.erase(0, ++size);
+}
+
+void    ConfigFilePars::run_location(int &start, int end, sData &sv)
+{
+
+    this->location_pointer[3] = &ConfigFilePars::locationAllowMethodsRun;
+    std::string tmp_type = this->file_content[start];
+    tmp_type.erase(0, strlen(LOCATION));
+    ft_strtrim(tmp_type);
+    getTypeExtention(tmp_type);
+    std::cout << tmp_type << std::endl;
+    std::map<std::string, location> sv_loc;
+    std::map<std::string, location>::iterator it = sv_loc.begin();
+    sv_loc.insert(std::pair<std::string, location>(tmp_type, do_location(start, end)));
     sv.addLocation(sv_loc);
 }
 
@@ -201,15 +223,16 @@ ConfigFilePars::ConfigFilePars(int ac, char **av)
     this->get_elements();
 }
 
-void    ConfigFilePars::add_location(sData &var, location &sv_loc)
-{
-    var.addLocation(sv_loc);
-}
+// void    ConfigFilePars::add_location(sData &var, location &sv_loc)
+// {
+//     var.addLocation(sv_loc);
+// }
 
 void    ConfigFilePars::add_server(sData &var)
 {
     this->server.push_back(var);
 }
+
 
 //check the validiti of argument normale usage [./webserv config.conf]
 void    ConfigFilePars::Arguments_checker(int ac, char **av)

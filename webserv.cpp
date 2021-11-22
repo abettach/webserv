@@ -1,5 +1,5 @@
 #include "headers.hpp"
-#include "parssingConfigFile/../inc/ConfigFilePars.hpp"
+#include "../inc/ConfigFilePars.hpp"
 
 static int		num_len(int n)
 {
