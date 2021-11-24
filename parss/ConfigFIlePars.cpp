@@ -94,7 +94,7 @@ void    ConfigFilePars::locationAllowMethodsRun(std::string &tmp, location &sv_l
     sv_loc.setLocationAllowedMethods(methodes);
 }
 
-location    ConfigFilePars::do_location(int &start, int &end)
+location    ConfigFilePars::getlocationInfo(int &start, int &end)
 {
     location sv_loc = location();
     std::string arr[4] = {AUTOINDEX, INDEX, FASTCGI_PASS, ALLOW_METHODS};
@@ -132,10 +132,9 @@ void    ConfigFilePars::run_location(int &start, int end, sData &sv)
     tmp_type.erase(0, strlen(LOCATION));
     ft_strtrim(tmp_type);
     getTypeExtention(tmp_type);
-    std::cout << tmp_type << std::endl;
     std::map<std::string, location> sv_loc;
     std::map<std::string, location>::iterator it = sv_loc.begin();
-    sv_loc.insert(std::pair<std::string, location>(tmp_type, do_location(start, end)));
+    sv_loc.insert(std::pair<std::string, location>(tmp_type, getlocationInfo(start, end)));
     sv.addLocation(sv_loc);
 }
 
@@ -218,15 +217,18 @@ ConfigFilePars::ConfigFilePars(int ac, char **av)
 {
     this->Arguments_checker(ac, av);
     this->get_file_content();
-    this->file_check();
+    // try
+    // {
+        this->file_check();
+    // }
+    // catch(const std::exception& e)
+    // {
+    //     std::cerr << e.what() << '\n';
+    // }
+    
     this->get_servers_index();
     this->get_elements();
 }
-
-// void    ConfigFilePars::add_location(sData &var, location &sv_loc)
-// {
-//     var.addLocation(sv_loc);
-// }
 
 void    ConfigFilePars::add_server(sData &var)
 {
@@ -285,13 +287,27 @@ void    ConfigFilePars::remove_comments(std::string &str, char c)
     str.erase(i, str.length() - 1);
 }
 
+const   char *ConfigFilePars::ERROR_EXEPTION::what() const throw()
+{
+    return ("ERROR: Bad file");
+}
+
 //check the validiti of the file
 void    ConfigFilePars::file_check()
 {
     std::string tmp;
     int open_brace = 0;
-    int close_brace = 0;
-
+    int open_bracket = 0;
+    for (std::vector<std::string>::iterator it = file_content.begin(); it != file_content.end(); it++)
+    {
+        tmp = *it;
+        open_bracket += std::count(tmp.begin(), tmp.end(), '[');
+    }
+    for (std::vector<std::string>::iterator it = file_content.begin(); it != file_content.end(); it++)
+    {
+        tmp = *it;
+        open_bracket -= std::count(tmp.begin(), tmp.end(), ']');
+    }
     for (std::vector<std::string>::iterator it = file_content.begin(); it != file_content.end(); it++)
     {
         tmp = *it;
@@ -300,11 +316,15 @@ void    ConfigFilePars::file_check()
     for (std::vector<std::string>::iterator it = file_content.begin(); it != file_content.end(); it++)
     {
         tmp = *it;
-        close_brace += std::count(tmp.begin(), tmp.end(), '}');
+        open_brace -= std::count(tmp.begin(), tmp.end(), '}');
     }
-    if (open_brace != close_brace)
+    if (open_brace != 0 || open_bracket != 0)
+    {
         std::cout<<"Error: Bad Config File content" << std::endl;
+        exit(0);
+    }
 }
+
 
 void    ConfigFilePars::get_file_content()
 {

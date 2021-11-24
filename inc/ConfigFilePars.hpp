@@ -23,6 +23,8 @@
 #define ROOT_DIR "root"
 #define OPEN_BRACE "{"
 #define CLOSE_BRACE "}"
+#define OPEN_BRACKET "["
+#define CLOSE_BRACKET "["
 #include "../inc/sData.hpp"
 #include "../inc/location.hpp"
 // #include "../inc/location.hpp"
@@ -32,55 +34,55 @@ class location;
 
 class ConfigFilePars
 {
-private:
+    private:
         std::string file_name;
         std::vector<std::string> file_content;
         std::vector<int> servers_num;
         std::vector<int> servers_index;
         void	(ConfigFilePars::*pointer[SERVER_MAX_ELEMENT])(std::string &, sData &);
         void	(ConfigFilePars::*location_pointer[LOCATION_MAX_ELEMENT])(std::string &, location &);
-public:
-    std::vector<sData> server;
-    ConfigFilePars(int ac, char **av);
-    ~ConfigFilePars();
+    public:
+        std::vector<sData> server;
+        ConfigFilePars(int ac, char **av);
+        ~ConfigFilePars();
 
-    void    Arguments_checker(int ac, char **av);
-    void    get_file_content();
-    void    ft_strtrim(std::string &str);
-    void    remove_comments(std::string &str, char c);
-    void    file_check();// check the inside of the server is valide ?
+        void    Arguments_checker(int ac, char **av);
+        void    get_file_content();
+        void    ft_strtrim(std::string &str);
+        void    remove_comments(std::string &str, char c);
+        void    file_check();// check the inside of the server is valide ?
 
-    std::vector<sData>   getServer();
-    void    get_elements();
-    void    add_server(sData &var);
-    std::string    getFileName();
-    std::vector<std::string> ft_split(std::string const &str, char c);
-    void    get_servers_index();
-    void    run_ports(std::string &tmp, sData &sv);
-    void    run_error_pages(std::string &tmp, sData &sv);
-    void    run_root_dir(std::string &tmp, sData &sv);
-    void    run_server_name(std::string &tmp, sData &sv);
-    void    run_host(std::string &tmp, sData &sv);
-    void    run_body_size(std::string &tmp, sData &sv);
-    void    run_location(int &start, int end, sData &sv);
-    void    add_location(sData &var, location &sv_loc);
+        std::vector<sData>   getServer();
+        void    get_elements();
+        void    add_server(sData &var);
+        std::string    getFileName();
+        std::vector<std::string> ft_split(std::string const &str, char c);
+        void    get_servers_index();
+        void    run_ports(std::string &tmp, sData &sv);
+        void    run_error_pages(std::string &tmp, sData &sv);
+        void    run_root_dir(std::string &tmp, sData &sv);
+        void    run_server_name(std::string &tmp, sData &sv);
+        void    run_host(std::string &tmp, sData &sv);
+        void    run_body_size(std::string &tmp, sData &sv);
+        void    run_location(int &start, int end, sData &sv);
+        void    add_location(sData &var, location &sv_loc);
 
-    void    locationAutoIndexRun(std::string &tmp, location &sv_loc);
-    void    locationIndexRun(std::string &tmp, location &sv_loc);
-    void    locationFastCgiPassRun(std::string &tmp, location &sv_loc);
-    void    locationAllowMethodsRun(std::string &tmp, location &sv_loc);
-    location    do_location(int &start, int &end);
-    void    getTypeExtention(std::string &tmp);
-    class FILE_NAME_EXEPTION : public std::exception
-    {
-        const char *what() const throw();
-    };
-    class ERROR_EXEPTION : public std::exception
-    {
-        const char *what() const throw();
-    };
+        void    locationAutoIndexRun(std::string &tmp, location &sv_loc);
+        void    locationIndexRun(std::string &tmp, location &sv_loc);
+        void    locationFastCgiPassRun(std::string &tmp, location &sv_loc);
+        void    locationAllowMethodsRun(std::string &tmp, location &sv_loc);
+        location    getlocationInfo(int &start, int &end);
+        void    getTypeExtention(std::string &tmp);
 
-    //locait    this->location_pointer[0] = &ConfigFilePars::locationAutoIndexRun;
+        class FILE_NAME_EXEPTION : public std::exception
+        {
+            const char *what() const throw();
+        };
+        class ERROR_EXEPTION : public std::exception
+        {
+            const char *what() const throw();
+        };
+        //locait    this->location_pointer[0] = &ConfigFilePars::locationAutoIndexRun;
 
 };
 
