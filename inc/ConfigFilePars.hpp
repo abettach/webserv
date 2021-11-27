@@ -24,10 +24,9 @@
 #define OPEN_BRACE "{"
 #define CLOSE_BRACE "}"
 #define OPEN_BRACKET "["
-#define CLOSE_BRACKET "["
+#define CLOSE_BRACKET "]"
 #include "../inc/sData.hpp"
 #include "../inc/location.hpp"
-// #include "../inc/location.hpp"
 
 class sData;
 class location;

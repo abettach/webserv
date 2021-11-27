@@ -10,17 +10,12 @@
 #include <string.h>
 #include <netdb.h>
 #include <vector>
-#include <string>
 #include <map>
 #include <arpa/inet.h> // for sockaddr_in and inet_ntoa()
 #include <iostream>
 #include <fstream>
-#include <iostream>
-#include <fstream>
 #include <sstream>
 #include <stdio.h>
-#include <stdlib.h>
-#include <stdlib.h>
 #include <algorithm>
 
 #endif

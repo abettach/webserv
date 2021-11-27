@@ -16,35 +16,67 @@ void    ConfigFilePars::run_ports(std::string &tmp, sData &sv)
 {
     tmp.erase(0,strlen(LISTEN));
     ft_strtrim(tmp);
+    if (tmp.empty())
+    {
+        std::cout << "Error: port is empty" << std::endl;
+        exit(EXIT_FAILURE);
+    }
     sv.setPort(std::stoi(tmp));
-    tmp.erase(0,tmp.length());
 }
+
 void    ConfigFilePars::run_error_pages(std::string &tmp, sData &sv)
 {
     tmp.erase(0,strlen(ERROR_PAGE));
     ft_strtrim(tmp);
+    if (tmp.empty())
+    {
+        std::cout << "Error: ERROR_PAGE is empty" << std::endl;
+        exit(EXIT_FAILURE);
+    }
     int error_num = std::stoi(tmp);
     std::string num = std::to_string(std::stoi(tmp));
     tmp.erase(0,strlen(num.c_str()));
     ft_strtrim(tmp);
+    if (tmp.empty())
+    {
+        std::cout << "Error: ERROR_PAGE is empty" << std::endl;
+        exit(EXIT_FAILURE);
+    }
     sv.setErrorPage(tmp, error_num);
 }
+
 void    ConfigFilePars::run_root_dir(std::string &tmp, sData &sv)
 {
     tmp.erase(0,strlen(ROOT_DIR));
     ft_strtrim(tmp);
+    if (tmp.empty())
+    {
+        std::cout << "Error: Root is empty" << std::endl;
+        exit(EXIT_FAILURE);
+    }
     sv.setRootDir(tmp);
 }
 void    ConfigFilePars::run_server_name(std::string &tmp, sData &sv)
 {
     tmp.erase(0,strlen(SERVER_NAME));
     ft_strtrim(tmp);
+    if (tmp.empty())
+    {
+        std::cout << "Error: server_name is empty" << std::endl;
+        exit(EXIT_FAILURE);
+    }
     sv.setServerName(tmp);
 }
+
 void    ConfigFilePars::run_host(std::string &tmp, sData &sv)
 {
     tmp.erase(0,strlen(HOST));
     ft_strtrim(tmp);
+    if (tmp.empty())
+    {
+        std::cout << "Error: host is empty" << std::endl;
+        exit(EXIT_FAILURE);
+    }
     sv.setHost(tmp);
 }
 
@@ -52,6 +84,11 @@ void    ConfigFilePars::run_body_size(std::string &tmp, sData &sv)
 {
     tmp.erase(0,strlen(CLIENT_BODY_SIZE));
     ft_strtrim(tmp);
+    if (tmp.empty())
+    {
+        std::cout << "Error: CLIENT_BODY_SIZE is empty" << std::endl;
+        exit(EXIT_FAILURE);
+    }
     int num = std::stoi(tmp);
     sv.setClienBodySize(num);
 }
@@ -69,12 +106,22 @@ void    ConfigFilePars::locationIndexRun(std::string &tmp, location &sv_loc)
 {
     tmp.erase(0, strlen(INDEX));
     ft_strtrim(tmp);
+    if (tmp.empty())
+    {
+        std::cout << "Error: Location Index is empty" << std::endl;
+        exit(EXIT_FAILURE);
+    }
     sv_loc.setLocationIndex(tmp);
 }
 void    ConfigFilePars::locationFastCgiPassRun(std::string &tmp, location &sv_loc)
 {
     tmp.erase(0, strlen(FASTCGI_PASS));
     ft_strtrim(tmp);
+    if (tmp.empty())
+    {
+        std::cout << "Error: Location FastCgiPass is empty" << std::endl;
+        exit(EXIT_FAILURE);
+    }
     sv_loc.setLocationFastCgiPass(tmp);
 }
 void    ConfigFilePars::locationAllowMethodsRun(std::string &tmp, location &sv_loc)
@@ -104,6 +151,11 @@ location    ConfigFilePars::getlocationInfo(int &start, int &end)
     std::string tmp_type = this->file_content[start];
     tmp_type.erase(0, strlen(LOCATION));
     ft_strtrim(tmp_type);
+    if (tmp_type.empty())
+    {
+        std::cout << "Error: Location ERROR" << std::endl;
+        exit(EXIT_FAILURE);
+    }
     sv_loc.setLocationExtention(tmp_type);
     for (size_t i = start + 1; i < end; i++)
         for (size_t count = 0; count < LOCATION_MAX_ELEMENT ; count++)
@@ -321,7 +373,7 @@ void    ConfigFilePars::file_check()
     if (open_brace != 0 || open_bracket != 0)
     {
         std::cout<<"Error: Bad Config File content" << std::endl;
-        exit(0);
+        exit(EXIT_FAILURE  );
     }
 }
 
@@ -348,5 +400,5 @@ void    ConfigFilePars::get_file_content()
     // _print(this->file_content, "vector");
 }
 
-ConfigFilePars::~ConfigFilePars(){}
+ConfigFilePars::~ConfigFilePars() {}
 //
