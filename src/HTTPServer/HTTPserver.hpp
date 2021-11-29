@@ -4,13 +4,14 @@
 
 class FileParss;
 
-class Httpsever
+class HTTPsever
 {
 private:
-    
+
 public:
-    Httpsever(/* args */);
-    ~Httpsever();
+    HTTPsever(/* args */);
+    HTTPsever(int, char **);
+    ~HTTPpsever();
 };
 
 #endif
