@@ -3,10 +3,12 @@ FLAGS = #-Wall -Wextra -Werror -std=c++98
 CC = c++
 RM = rm -rf
 
-SRCS = parss/main.cpp \
-		parss/ConfigFIlePars.cpp \
-		parss/sData.cpp \
-		parss/location.cpp
+SRCS = main.cpp \
+		src/Config/FileParss.cpp \
+		src/Config/serverINFO.cpp \
+		src/Config/location.cpp
+
+OBJDIR = obj
 
 OBJS = $(SRCS:.cpp=.o)
 
@@ -18,11 +20,8 @@ all: $(NAME)
 $(NAME) : $(OBJS)
 	$(CC) $(FLAGS) $(OBJS) -o $(NAME)
 
-test:
-		make re
-		@make clean
-		@echo " "
-		@./webserv config/config.conf| cat -e
+# $(OBJDIR):
+#   mkdir -p $(OBJDIR)
 
 clean:
 	@$(RM) $(OBJS)
