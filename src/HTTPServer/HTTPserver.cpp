@@ -1,13 +1,10 @@
 #include "HTTPserver.hpp"
 
-HTTPsever::Httpsever(/* args */)
+HTTPserver::HTTPserver(int ac, char **av)
 {
-}
-HTTPsever::Httpsever(int ac, char **av)
-{
-    FileParss config;
+    FileParss config(ac, av);
 }
 
-Httpsever::~Httpsever()
+HTTPserver::~HTTPserver()
 {
 }

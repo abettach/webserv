@@ -6,7 +6,8 @@ RM = rm -rf
 SRCS = main.cpp \
 		src/Config/FileParss.cpp \
 		src/Config/serverINFO.cpp \
-		src/Config/locationINFO.cpp
+		src/Config/locationINFO.cpp \
+		src/HTTPserver/HTTPserver.cpp
 
 OBJDIR = obj
 

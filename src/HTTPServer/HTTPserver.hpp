@@ -2,16 +2,14 @@
 #define HTTPSERVER_HPP
 #include "../Config/FileParss.hpp"
 
-class FileParss;
-
-class HTTPsever
+class HTTPserver
 {
 private:
 
 public:
-    HTTPsever(/* args */);
-    HTTPsever(int, char **);
-    ~HTTPpsever();
+    HTTPserver(/* args */);
+    HTTPserver(int, char **);
+    ~HTTPserver();
 };
 
 #endif
