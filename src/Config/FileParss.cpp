@@ -4,12 +4,13 @@ void    FileParss::get_servers_index()
 {
     for(size_t i = 0; i < file_content.size(); i++)
     {
+        std::cout << "|" + file_content[i] + "|" << std::endl;
         if (file_content[i].compare(SERVER) == 0 && file_content[i+1].compare("[") == 0)
             servers_index.push_back(i);
         else if (file_content[i].compare("]") == 0)
             servers_index.push_back(i);
     }
-    // std::cout << servers_index[0] << ", " << servers_index[1] << std::endl;
+    std::cout << servers_index[0] << ", " << servers_index[1] << std::endl;
 }
 
 void    FileParss::run_ports(std::string &tmp, serverINFO &sv)
@@ -269,15 +270,7 @@ FileParss::FileParss(int ac, char **av)
 {
     this->Arguments_checker(ac, av);
     this->get_file_content();
-    // try
-    // {
-        this->file_check();
-    // }
-    // catch(const std::exception& e)
-    // {
-    //     std::cerr << e.what() << '\n';
-    // }
-    
+    this->file_check();
     this->get_servers_index();
     this->get_elements();
 }
@@ -291,20 +284,11 @@ void    FileParss::add_server(serverINFO &var)
 //check the validiti of argument normale usage [./webserv config.conf]
 void    FileParss::Arguments_checker(int ac, char **av)
 {
-    if (ac == 2)
-    {
-        if (av[1])
-            this->file_name = av[1];
-        else
-            this->file_name = "config/config.conf";
-        std::string extention = &this->file_name[static_cast<int>(this->file_name.find(".") + 1)];
-    
-        if(extention != FILE_EXTENTION)
-        {
-            std::cout << INVALIDE_FILE_NAME << std::endl;
-            exit(1);
-        }
-    }
+    if (av[1])
+        this->file_name = av[1];
+    else
+        this->file_name = "conf/config.conf";
+    std::string extention = &this->file_name[static_cast<int>(this->file_name.find(".") + 1)];
 }
 
 int    isspace(char c)
@@ -372,8 +356,9 @@ void    FileParss::file_check()
     }
     if (open_brace != 0 || open_bracket != 0)
     {
+        //need to change this to exeption (throw ERROR_BAD_CONFIG_FILE)
         std::cout<<"Error: Bad Config File content" << std::endl;
-        exit(EXIT_FAILURE  );
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -383,6 +368,7 @@ void    FileParss::get_file_content()
     std::ifstream file(this->file_name.c_str());
     std::string tmp;
     std::string new_string;
+    int i = 0;
     while(std::getline(file, tmp))
     {
         ft_strtrim(tmp);
@@ -392,12 +378,13 @@ void    FileParss::get_file_content()
             continue;
         if(tmp.find(COMMENTV1) != std::string::npos)
             remove_comments(tmp, COMMENTV1);
-        if (tmp.find(COMMENTV2) != std::string::npos)
+        if(tmp.find(COMMENTV2) != std::string::npos)
             remove_comments(tmp, COMMENTV2);
         ft_strtrim(tmp);
-        this->file_content.push_back(tmp);
+        file_content.push_back(tmp);
+        i++;
     }
-    // _print(this->file_content, "vector");
+    // _print(file_content, "vector");
 }
 
 FileParss::~FileParss() {}

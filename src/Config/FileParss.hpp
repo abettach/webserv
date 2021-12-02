@@ -73,6 +73,10 @@ class FileParss
         location    getlocationInfo(int &start, int &end);
         void    getTypeExtention(std::string &tmp);
 
+        class ERROR: public std::exception
+        {
+            const char *what() const throw();
+        };
         class FILE_NAME_EXEPTION : public std::exception
         {
             const char *what() const throw();
