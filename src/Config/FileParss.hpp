@@ -47,46 +47,33 @@ class FileParss
 
         void    Arguments_checker(int ac, char **av);
         void    get_file_content();
-        void    ft_strtrim(std::string &str);
-        void    remove_comments(std::string &str, char c);
+        void    ft_strtrim(std::string &);
+        void    remove_comments(std::string &, char );
         void    file_check();// check the inside of the server is valide ?
 
         std::vector<serverINFO>   getServer();
         void    get_elements();
         void    add_server(serverINFO &var);
         std::string    getFileName();
-        std::vector<std::string> ft_split(std::string const &str, char c);
+        std::vector<std::string> ft_split(std::string const &, char);
         void    get_servers_index();
-        void    run_ports(std::string &tmp, serverINFO &sv);
-        void    run_error_pages(std::string &tmp, serverINFO &sv);
-        void    run_root_dir(std::string &tmp, serverINFO &sv);
-        void    run_server_name(std::string &tmp, serverINFO &sv);
-        void    run_host(std::string &tmp, serverINFO &sv);
-        void    run_body_size(std::string &tmp, serverINFO &sv);
-        void    run_location(int &start, int end, serverINFO &sv);
-        void    add_location(serverINFO &var, location &sv_loc);
+        void    run_ports(std::string &, serverINFO &);
+        void    run_error_pages(std::string &, serverINFO &);
+        void    run_root_dir(std::string &, serverINFO &);
+        void    run_server_name(std::string &, serverINFO &);
+        void    run_host(std::string &, serverINFO &);
+        void    run_body_size(std::string &, serverINFO &);
+        void    run_location(int &, int , serverINFO &);
+        void    add_location(serverINFO &, location &);
 
-        void    locationAutoIndexRun(std::string &tmp, location &sv_loc);
-        void    locationIndexRun(std::string &tmp, location &sv_loc);
-        void    locationFastCgiPassRun(std::string &tmp, location &sv_loc);
-        void    locationAllowMethodsRun(std::string &tmp, location &sv_loc);
-        location    getlocationInfo(int &start, int &end);
-        void    getTypeExtention(std::string &tmp);
+        void    locationAutoIndexRun(std::string &, location &);
+        void    locationIndexRun(std::string &, location &);
+        void    locationFastCgiPassRun(std::string &, location &);
+        void    locationAllowMethodsRun(std::string &, location &);
+        location    getlocationInfo(int &, int &);
+        void    getTypeExtention(std::string &);
         std::vector<serverINFO>    SplitServers();
-        class ERROR: public std::exception
-        {
-            const char *what() const throw();
-        };
-        class FILE_NAME_EXEPTION : public std::exception
-        {
-            const char *what() const throw();
-        };
-        class ERROR_EXEPTION : public std::exception
-        {
-            const char *what() const throw();
-        };
-        //locait    this->location_pointer[0] = &FileParss::locationAutoIndexRun;
-
+        void    init_pointer(bool);
 };
 
 template <typename T>

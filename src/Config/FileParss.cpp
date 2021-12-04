@@ -114,22 +114,38 @@ void    FileParss::locationAllowMethodsRun(std::string &tmp, location &sv_loc)
     sv_loc.setLocationAllowedMethods(methodes);
 }
 
+void    FileParss::init_pointer(bool location)
+{
+    if (!location)
+    {
+        this->pointer[0] = &FileParss::run_ports;
+        this->pointer[1] = &FileParss::run_host;
+        this->pointer[2] = &FileParss::run_server_name;
+        this->pointer[3] = &FileParss::run_body_size;
+        this->pointer[4] = &FileParss::run_error_pages;
+        this->pointer[5] = &FileParss::run_root_dir;
+    }
+    else
+    {
+        this->location_pointer[0] = &FileParss::locationAutoIndexRun;
+        this->location_pointer[1] = &FileParss::locationIndexRun;
+        this->location_pointer[2] = &FileParss::locationFastCgiPassRun;
+        this->location_pointer[3] = &FileParss::locationAllowMethodsRun;
+    }
+}
+
 location    FileParss::getlocationInfo(int &start, int &end)
 {
     location sv_loc = location();
     std::string arr[4] = {AUTOINDEX, INDEX, FASTCGI_PASS, ALLOW_METHODS};
-    this->location_pointer[0] = &FileParss::locationAutoIndexRun;
-    this->location_pointer[1] = &FileParss::locationIndexRun;
-    this->location_pointer[2] = &FileParss::locationFastCgiPassRun;
-    this->location_pointer[3] = &FileParss::locationAllowMethodsRun;
-
+    init_pointer(true);
     std::string tmp_type = this->file_content[start];
     tmp_type.erase(0, strlen(LOCATION));
     ft_strtrim(tmp_type);
     if (tmp_type.empty())
         throw std::runtime_error("Error: Check Your Location!");
     sv_loc.setLocationExtention(tmp_type);
-    for (size_t i = start + 1; i < end; i++)
+    for (int i = start + 1; i < end; i++)
         for (size_t count = 0; count < LOCATION_MAX_ELEMENT ; count++)
             if(this->file_content[i].find(arr[count])!= std::string::npos)
             {
@@ -155,7 +171,6 @@ void    FileParss::run_location(int &start, int end, serverINFO &sv)
     ft_strtrim(tmp_type);
     getTypeExtention(tmp_type);
     std::map<std::string, location> sv_loc;
-    std::map<std::string, location>::iterator it = sv_loc.begin();
     sv_loc.insert(std::pair<std::string, location>(tmp_type, getlocationInfo(start, end)));
     sv.addLocation(sv_loc);
 }
@@ -170,13 +185,8 @@ void    FileParss::get_elements()
     int start, end;
     bool isNotLocation = false;
     std::string arr[6] = {LISTEN, HOST, SERVER_NAME, CLIENT_BODY_SIZE, ERROR_PAGE, ROOT_DIR};
-    this->pointer[0] = &FileParss::run_ports;
-    this->pointer[1] = &FileParss::run_host;
-    this->pointer[2] = &FileParss::run_server_name;
-    this->pointer[3] = &FileParss::run_body_size;
-    this->pointer[4] = &FileParss::run_error_pages;
-    this->pointer[5] = &FileParss::run_root_dir;
-    serverINFO sv = serverINFO();
+    init_pointer(false);
+    serverINFO sv;
     for (size_t i = 0;i < servers_index.size();)
     {
         start = servers_index[i] + 1;
@@ -210,24 +220,9 @@ void    FileParss::get_elements()
             }
         }
         this->add_server(sv);
-        sv.clear_all(sv);
+        sv.clear_all();
         i+=2;
     }
-    // int i = 0;
-    // while (i < this->server.size())
-    // {
-    //     std::cout<<"\e[4;36m  _____    _____   ______     __    __    _____   ______" << std::endl;
-    //     std::cout<<" / ____\\  / ___/  (   __ \\    ) )  ( (   / ___/  (   __ \\" << std::endl;
-    //     std::cout<<"( (___   ( (__     ) (__) )  ( (    ) ) ( (__     ) (__) )" << std::endl;
-    //     std::cout<<" \\___ \\   ) __)   (    __/    \\ \\  / /   ) __)   (    __/ " << std::endl;
-    //     std::cout<<"     ) ) ( (       ) \\ \\  _    \\ \\/ /   ( (       ) \\ \\  _ " << std::endl;
-    //     std::cout<<" ___/ /   \\ \\___  ( ( \\ \\_))    \\  /     \\ \\___  ( ( \\ \\_))" << std::endl;
-    //     std::cout<<"/____/     \\____\\  )_) \\__/      \\/       \\____\\  )_) \\__/" << std::endl;
-    //     std::cout<<"                            ["<<i<<"]                            " << std::endl;
-    //     std::cout << std::endl;
-    //     this->server[i].printServerData();
-    //     i++;
-    // }
 }
 
 std::string FileParss::getFileName()
@@ -315,10 +310,6 @@ void    FileParss::remove_comments(std::string &str, char c)
     str.erase(i, str.length() - 1);
 }
 
-const   char *FileParss::ERROR_EXEPTION::what() const throw()
-{
-    return ("ERROR: Bad file");
-}
 
 //check the validiti of the file
 void    FileParss::file_check()

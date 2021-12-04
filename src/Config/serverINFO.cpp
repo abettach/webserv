@@ -85,7 +85,7 @@ void serverINFO::ft_strtrim(std::string &str)
         str.erase(str.length() - 1, 1);
 }
 
-void    serverINFO::clear_all(serverINFO &sv)
+void    serverINFO::clear_all()
 {
     for(;ports.size();)
         this->ports.pop_back();
@@ -153,6 +153,7 @@ void    serverINFO::printServerData()
         std::cout << "\e[1;34mGET           = \e[1;32m|" << test["GET"] << "|\e[1;34m, POST = \e[1;32m|" << test["POST"] << "|\e[1;34m, DELETE = \e[1;32m|" << test["DELETE"] << "|" << std::endl;
     }
 }
+
 void    serverINFO::printServerALLData()
 {
     std::cout << "\e[1;31mports                = \e[1;32m";
@@ -168,7 +169,6 @@ void    serverINFO::printServerALLData()
 
     std::cout << "\e[1;33m///////////////////////LOACATION INFORMATION/////////////////\e[1;34m" << std::endl;
     std::vector<std::string> types;
-    std::map<std::string, location>::iterator it = locat.begin();
     for (std::map<std::string, location>::iterator it = locat.begin(); it != locat.end(); it++)
         types.push_back(it->first);
     for (size_t i = 0; i < types.size() ; i++)

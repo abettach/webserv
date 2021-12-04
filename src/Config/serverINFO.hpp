@@ -27,7 +27,7 @@ class serverINFO
         void    setPort(int port);
         int    getPort();
         void    printPortData();
-        void    clear_all(serverINFO &sv);
+        void    clear_all();
         void    setErrorPage(std::string &tmp, int &error_num);
         void    printErrorPageserverINFO();
         void    setRootDir(std::string &tmp);
