@@ -1,5 +1,5 @@
 #include "headers.hpp"
-#include "../inc/FileParss.hpp"
+#include "src/Config/FileParss.hpp"
 
 static int		num_len(int n)
 {

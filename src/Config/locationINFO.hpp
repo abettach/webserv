@@ -4,6 +4,7 @@
 class serverINFO;
 class location
 {
+    friend class serverINFO;
     private:
         std::string Locationtype;
         std::string type;

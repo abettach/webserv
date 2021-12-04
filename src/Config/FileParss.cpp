@@ -4,13 +4,11 @@ void    FileParss::get_servers_index()
 {
     for(size_t i = 0; i < file_content.size(); i++)
     {
-        std::cout << "|" + file_content[i] + "|" << std::endl;
         if (file_content[i].compare(SERVER) == 0 && file_content[i+1].compare("[") == 0)
             servers_index.push_back(i);
         else if (file_content[i].compare("]") == 0)
             servers_index.push_back(i);
     }
-    std::cout << servers_index[0] << ", " << servers_index[1] << std::endl;
 }
 
 void    FileParss::run_ports(std::string &tmp, serverINFO &sv)
@@ -18,11 +16,8 @@ void    FileParss::run_ports(std::string &tmp, serverINFO &sv)
     tmp.erase(0,strlen(LISTEN));
     ft_strtrim(tmp);
     if (tmp.empty())
-    {
-        std::cout << "Error: port is empty" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    sv.setPort(std::stoi(tmp));
+        throw std::runtime_error("Error: Check Your Ports!");
+    sv.addPorts(std::stoi(tmp));
 }
 
 void    FileParss::run_error_pages(std::string &tmp, serverINFO &sv)
@@ -30,19 +25,13 @@ void    FileParss::run_error_pages(std::string &tmp, serverINFO &sv)
     tmp.erase(0,strlen(ERROR_PAGE));
     ft_strtrim(tmp);
     if (tmp.empty())
-    {
-        std::cout << "Error: ERROR_PAGE is empty" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+        throw std::runtime_error("Error: Check Your ERROR_PAGE!");
     int error_num = std::stoi(tmp);
     std::string num = std::to_string(std::stoi(tmp));
     tmp.erase(0,strlen(num.c_str()));
     ft_strtrim(tmp);
     if (tmp.empty())
-    {
-        std::cout << "Error: ERROR_PAGE is empty" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+        throw std::runtime_error("Error: Check Your ERROR_PAGE!");
     sv.setErrorPage(tmp, error_num);
 }
 
@@ -51,10 +40,7 @@ void    FileParss::run_root_dir(std::string &tmp, serverINFO &sv)
     tmp.erase(0,strlen(ROOT_DIR));
     ft_strtrim(tmp);
     if (tmp.empty())
-    {
-        std::cout << "Error: Root is empty" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+        throw std::runtime_error("Error: Check Your Root!");
     sv.setRootDir(tmp);
 }
 void    FileParss::run_server_name(std::string &tmp, serverINFO &sv)
@@ -62,10 +48,7 @@ void    FileParss::run_server_name(std::string &tmp, serverINFO &sv)
     tmp.erase(0,strlen(SERVER_NAME));
     ft_strtrim(tmp);
     if (tmp.empty())
-    {
-        std::cout << "Error: server_name is empty" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+        throw std::runtime_error("Error: Check Your server_name!");
     sv.setServerName(tmp);
 }
 
@@ -74,10 +57,7 @@ void    FileParss::run_host(std::string &tmp, serverINFO &sv)
     tmp.erase(0,strlen(HOST));
     ft_strtrim(tmp);
     if (tmp.empty())
-    {
-        std::cout << "Error: host is empty" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+        throw std::runtime_error("Error: Check Your HOST!");
     sv.setHost(tmp);
 }
 
@@ -86,10 +66,7 @@ void    FileParss::run_body_size(std::string &tmp, serverINFO &sv)
     tmp.erase(0,strlen(CLIENT_BODY_SIZE));
     ft_strtrim(tmp);
     if (tmp.empty())
-    {
-        std::cout << "Error: CLIENT_BODY_SIZE is empty" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+        throw std::runtime_error("Error: Check Your CLIENT_BODY_SIZE!");
     int num = std::stoi(tmp);
     sv.setClienBodySize(num);
 }
@@ -108,21 +85,16 @@ void    FileParss::locationIndexRun(std::string &tmp, location &sv_loc)
     tmp.erase(0, strlen(INDEX));
     ft_strtrim(tmp);
     if (tmp.empty())
-    {
-        std::cout << "Error: Location Index is empty" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+        throw std::runtime_error("Error: Check Your Location Index!");
     sv_loc.setLocationIndex(tmp);
 }
+
 void    FileParss::locationFastCgiPassRun(std::string &tmp, location &sv_loc)
 {
     tmp.erase(0, strlen(FASTCGI_PASS));
     ft_strtrim(tmp);
     if (tmp.empty())
-    {
-        std::cout << "Error: Location FastCgiPass is empty" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+        throw std::runtime_error("Error: Check Your Location FastCgiPass!");
     sv_loc.setLocationFastCgiPass(tmp);
 }
 void    FileParss::locationAllowMethodsRun(std::string &tmp, location &sv_loc)
@@ -149,14 +121,13 @@ location    FileParss::getlocationInfo(int &start, int &end)
     this->location_pointer[0] = &FileParss::locationAutoIndexRun;
     this->location_pointer[1] = &FileParss::locationIndexRun;
     this->location_pointer[2] = &FileParss::locationFastCgiPassRun;
+    this->location_pointer[3] = &FileParss::locationAllowMethodsRun;
+
     std::string tmp_type = this->file_content[start];
     tmp_type.erase(0, strlen(LOCATION));
     ft_strtrim(tmp_type);
     if (tmp_type.empty())
-    {
-        std::cout << "Error: Location ERROR" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+        throw std::runtime_error("Error: Check Your Location!");
     sv_loc.setLocationExtention(tmp_type);
     for (size_t i = start + 1; i < end; i++)
         for (size_t count = 0; count < LOCATION_MAX_ELEMENT ; count++)
@@ -179,8 +150,6 @@ void    FileParss::getTypeExtention(std::string &tmp)
 
 void    FileParss::run_location(int &start, int end, serverINFO &sv)
 {
-
-    this->location_pointer[3] = &FileParss::locationAllowMethodsRun;
     std::string tmp_type = this->file_content[start];
     tmp_type.erase(0, strlen(LOCATION));
     ft_strtrim(tmp_type);
@@ -228,7 +197,7 @@ void    FileParss::get_elements()
             {
                 isNotLocation = true;
                 if (this->file_content[start + 1] != OPEN_BRACE)
-                    std::cout << "ERROR: location probleme" << std::endl;
+                    throw std::runtime_error("Error: Check your Location Braces ->line [" + this->file_content[start] + "]");
                 else
                 {
                     int locationEND = start;
@@ -244,26 +213,45 @@ void    FileParss::get_elements()
         sv.clear_all(sv);
         i+=2;
     }
-    int i = 0;
-    while (i < this->server.size())
-    {
-        std::cout<<"\e[4;36m  _____    _____   ______     __    __    _____   ______" << std::endl;
-        std::cout<<" / ____\\  / ___/  (   __ \\    ) )  ( (   / ___/  (   __ \\" << std::endl;
-        std::cout<<"( (___   ( (__     ) (__) )  ( (    ) ) ( (__     ) (__) )" << std::endl;
-        std::cout<<" \\___ \\   ) __)   (    __/    \\ \\  / /   ) __)   (    __/ " << std::endl;
-        std::cout<<"     ) ) ( (       ) \\ \\  _    \\ \\/ /   ( (       ) \\ \\  _ " << std::endl;
-        std::cout<<" ___/ /   \\ \\___  ( ( \\ \\_))    \\  /     \\ \\___  ( ( \\ \\_))" << std::endl;
-        std::cout<<"/____/     \\____\\  )_) \\__/      \\/       \\____\\  )_) \\__/" << std::endl;
-        std::cout<<"                            ["<<i<<"]                            " << std::endl;
-        std::cout << std::endl;
-        this->server[i].printServerData();
-        i++;
-    }
+    // int i = 0;
+    // while (i < this->server.size())
+    // {
+    //     std::cout<<"\e[4;36m  _____    _____   ______     __    __    _____   ______" << std::endl;
+    //     std::cout<<" / ____\\  / ___/  (   __ \\    ) )  ( (   / ___/  (   __ \\" << std::endl;
+    //     std::cout<<"( (___   ( (__     ) (__) )  ( (    ) ) ( (__     ) (__) )" << std::endl;
+    //     std::cout<<" \\___ \\   ) __)   (    __/    \\ \\  / /   ) __)   (    __/ " << std::endl;
+    //     std::cout<<"     ) ) ( (       ) \\ \\  _    \\ \\/ /   ( (       ) \\ \\  _ " << std::endl;
+    //     std::cout<<" ___/ /   \\ \\___  ( ( \\ \\_))    \\  /     \\ \\___  ( ( \\ \\_))" << std::endl;
+    //     std::cout<<"/____/     \\____\\  )_) \\__/      \\/       \\____\\  )_) \\__/" << std::endl;
+    //     std::cout<<"                            ["<<i<<"]                            " << std::endl;
+    //     std::cout << std::endl;
+    //     this->server[i].printServerData();
+    //     i++;
+    // }
 }
 
 std::string FileParss::getFileName()
 {
     return this->file_name;
+}
+
+std::vector<serverINFO>    FileParss::SplitServers()
+{
+    std::vector<serverINFO> servers;
+
+    for (size_t i = 0; i < this->server.size(); i++)
+    {
+        std::vector<int> _ports;
+        _ports = server[i].getPorts();
+        for (size_t j = 0; j < _ports.size(); j++)
+        {
+            serverINFO newServer;
+            newServer = server[i];
+            newServer.setPort(_ports[j]);
+            servers.push_back(newServer);
+        }
+    }
+    return servers;
 }
 
 FileParss::FileParss(int ac, char **av)
@@ -284,6 +272,10 @@ void    FileParss::add_server(serverINFO &var)
 //check the validiti of argument normale usage [./webserv config.conf]
 void    FileParss::Arguments_checker(int ac, char **av)
 {
+    if (ac > 2)
+    {
+        throw std::runtime_error("Error: Check your Arguments!");
+    }
     if (av[1])
         this->file_name = av[1];
     else
@@ -355,13 +347,8 @@ void    FileParss::file_check()
         open_brace -= std::count(tmp.begin(), tmp.end(), '}');
     }
     if (open_brace != 0 || open_bracket != 0)
-    {
-        //need to change this to exeption (throw ERROR_BAD_CONFIG_FILE)
-        std::cout<<"Error: Bad Config File content" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+        throw std::runtime_error("ERROR: Bad Config File content [Check your Brackets[] or Braces()]");
 }
-
 
 void    FileParss::get_file_content()
 {

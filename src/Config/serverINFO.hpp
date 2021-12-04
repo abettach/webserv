@@ -8,21 +8,24 @@ class loc;
 
 class serverINFO
 {
+    friend class FileParss;
     private:
         std::vector<int> ports;
+        int port;
         std::string host;
         std::string server_name;
         int client_max_body_size;
         std::map<int, std::string> error_pages;
         std::string root_dir;
-    public:
         std::map<std::string, location> locat;
-        // std::vector<location> locat;
+    public:
         serverINFO();
         ~serverINFO();
 
+        void    addPorts(int port);
+        std::vector<int>  getPorts();
         void    setPort(int port);
-        std::vector<int>  getPort();
+        int    getPort();
         void    printPortData();
         void    clear_all(serverINFO &sv);
         void    setErrorPage(std::string &tmp, int &error_num);
@@ -44,6 +47,7 @@ class serverINFO
         void    ft_strtrim(std::string &str);
         void    addLocation(std::map<std::string, location> &sv_loc);
         void    clearLocation(location &sv_loc);
+        void    printServerALLData();
         
 };
 #endif

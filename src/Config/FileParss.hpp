@@ -40,8 +40,8 @@ class FileParss
         std::vector<int> servers_index;
         void	(FileParss::*pointer[SERVER_MAX_ELEMENT])(std::string &, serverINFO &);
         void	(FileParss::*location_pointer[LOCATION_MAX_ELEMENT])(std::string &, location &);
-    public:
         std::vector<serverINFO> server;
+    public:
         FileParss(int ac, char **av);
         ~FileParss();
 
@@ -72,7 +72,7 @@ class FileParss
         void    locationAllowMethodsRun(std::string &tmp, location &sv_loc);
         location    getlocationInfo(int &start, int &end);
         void    getTypeExtention(std::string &tmp);
-
+        std::vector<serverINFO>    SplitServers();
         class ERROR: public std::exception
         {
             const char *what() const throw();
