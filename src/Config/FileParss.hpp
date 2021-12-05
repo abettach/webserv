@@ -36,7 +36,6 @@ class FileParss
     private:
         std::string file_name;
         std::vector<std::string> file_content;
-        std::vector<int> servers_num;
         std::vector<int> servers_index;
         void	(FileParss::*pointer[SERVER_MAX_ELEMENT])(std::string &, serverINFO &);
         void	(FileParss::*location_pointer[LOCATION_MAX_ELEMENT])(std::string &, location &);

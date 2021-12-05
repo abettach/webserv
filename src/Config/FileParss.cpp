@@ -1,7 +1,27 @@
 #include "FileParss.hpp"
 
+FileParss::FileParss(int ac, char **av)
+{
+    this->Arguments_checker(ac, av);
+    this->get_file_content();
+    this->file_check();
+    this->get_servers_index();
+    this->get_elements();
+}
+
+std::string FileParss::getFileName()
+{
+    return this->file_name;
+}
+void    FileParss::add_server(serverINFO &var)
+{
+    this->server.push_back(var);
+}
+
 void    FileParss::get_servers_index()
 {
+    if (file_content[0] != SERVER)
+        throw std::runtime_error("ERROR: Check Your Server Configuration File [EMPTY SEVER]");
     for(size_t i = 0; i < file_content.size(); i++)
     {
         if (file_content[i].compare(SERVER) == 0 && file_content[i+1].compare("[") == 0)
@@ -103,10 +123,7 @@ void    FileParss::locationAllowMethodsRun(std::string &tmp, location &sv_loc)
     tmp.erase(0, strlen(ALLOW_METHODS));
     ft_strtrim(tmp);
     if (tmp.find("GET") != std::string::npos)
-    {
         methodes.insert(std::pair<std::string, bool>("GET", true));
-        methodes["GET"] = true;
-    }
     if (tmp.find("POST") != std::string::npos)
         methodes.insert(std::pair<std::string, bool>("POST", true));
     if (tmp.find("DELETE") != std::string::npos)
@@ -225,11 +242,6 @@ void    FileParss::get_elements()
     }
 }
 
-std::string FileParss::getFileName()
-{
-    return this->file_name;
-}
-
 std::vector<serverINFO>    FileParss::SplitServers()
 {
     std::vector<serverINFO> servers;
@@ -248,21 +260,6 @@ std::vector<serverINFO>    FileParss::SplitServers()
     }
     return servers;
 }
-
-FileParss::FileParss(int ac, char **av)
-{
-    this->Arguments_checker(ac, av);
-    this->get_file_content();
-    this->file_check();
-    this->get_servers_index();
-    this->get_elements();
-}
-
-void    FileParss::add_server(serverINFO &var)
-{
-    this->server.push_back(var);
-}
-
 
 //check the validiti of argument normale usage [./webserv config.conf]
 void    FileParss::Arguments_checker(int ac, char **av)
@@ -366,4 +363,3 @@ void    FileParss::get_file_content()
 }
 
 FileParss::~FileParss() {}
-//
