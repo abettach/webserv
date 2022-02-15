@@ -17,8 +17,8 @@ class serverINFO
         int client_max_body_size;
         std::map<int, std::string> error_pages;
         std::string root_dir;
-        std::map<std::string, location> locat;
     public:
+        std::map<std::string, location> locat;
         serverINFO();
         ~serverINFO();
 

@@ -46,8 +46,8 @@ void    FileParss::run_error_pages(std::string &tmp, serverINFO &sv)
     ft_strtrim(tmp);
     if (tmp.empty())
         throw std::runtime_error("Error: Check Your ERROR_PAGE!");
-    int error_num = std::stoi(tmp);
-    std::string num = std::to_string(std::stoi(tmp));
+    int error_num = std::stoi(tmp); // stoi cpp11
+    std::string num = std::to_string(std::stoi(tmp)); // t_string -42 cpp11
     tmp.erase(0,strlen(num.c_str()));
     ft_strtrim(tmp);
     if (tmp.empty())
@@ -359,7 +359,7 @@ void    FileParss::get_file_content()
         file_content.push_back(tmp);
         i++;
     }
-    // _print(file_content, "vector");
+    //_print(file_content, "vector");
 }
 
 FileParss::~FileParss() {}

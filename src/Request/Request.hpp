@@ -1,36 +1,26 @@
 #ifndef REQUEST_HPP
 #define REQUEST_HPP
-
-#include "webserv.hpp"
-// length
+#include "../../headers.hpp"
+#include "StatusCode.hpp"
 #define REQUEST_URI_MAX_LENGTH 2084
 #define HEADER_MAX_LENGTH 1000
 #define VALUE_MAX_LENGTH 4000
-
 class Request
 {
+private:
+	std::string request;
+	std::string methode;
+	std::string target;
+	std::string protocol;
+	std::map<std::string, std::string> headers;
 
 public:
-	Request();
+	Request(/* args */);
 	~Request();
-
-	int parse(std::string &);
-	int parse_request_line();
-	int parse_headers();
-	int prebody();
-	int parse_body();
-
-private:
-	std::string _buffer;
-	std::string _method;
-	std::string _target;
-	std::string _query_string;
-	std::string _protocol;
-	std::string _req_body;
-	std::map<std::string, std::string> _headers;
-
-	int _body_offset;
-	size_t _length;
+	int		Request_start(std::string);
+	int		request_line();
+	int		request_headers();
+	void	printRequestInformation();
 };
 
 #endif

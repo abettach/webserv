@@ -80,7 +80,7 @@ int     main(int ac, char **av)
         perror("In listen");
         exit(EXIT_FAILURE);
     }
-    char *header = strdup("HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: ");
+    char *header = strdup("HTTP/1.1 200 OK\nContent-Type: text/html\nContent-   : ");
     std::string body = get_body("index.html");
     std::string all = std::string(header)  + std::string(ft_itoa(strlen(body.c_str())))+ "\n\n"  + body;
     std::cout << all << std::endl;
