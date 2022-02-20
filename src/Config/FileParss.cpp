@@ -37,6 +37,9 @@ void    FileParss::run_ports(std::string &tmp, serverINFO &sv)
     ft_strtrim(tmp);
     if (tmp.empty())
         throw std::runtime_error("Error: Check Your Ports!");
+    for (size_t i = 0; i < tmp.size(); i++)
+        if (tmp[i] < '0' || tmp[i] > '9')
+            throw std::runtime_error("Error: Check Your Ports!");
     sv.addPorts(std::stoi(tmp));
 }
 
@@ -95,10 +98,12 @@ void    FileParss::locationAutoIndexRun(std::string &tmp, location &sv_loc)
 {
     tmp.erase(0,strlen(AUTOINDEX));
     ft_strtrim(tmp);
-    if (tmp.compare("on") == 1)
+    if (tmp.compare("on") == 0)
         sv_loc.setLocationAutoIndex(true);
-    else
+    else if (tmp.compare("off") == 0)
         sv_loc.setLocationAutoIndex(false);
+    else
+        throw std::runtime_error("Error: Location autoindex must be 'on' or 'off'!");
 }
 void    FileParss::locationIndexRun(std::string &tmp, location &sv_loc)
 {
@@ -264,13 +269,14 @@ std::vector<serverINFO>    FileParss::SplitServers()
 //check the validiti of argument normale usage [./webserv config.conf]
 void    FileParss::Arguments_checker(int ac, char **av)
 {
-    if (ac > 2)
-    {
-        throw std::runtime_error("Error: Check your Arguments!");
-    }
-    if (av[1])
-        this->file_name = av[1];
-    else
+    //for now i use only the config.conf because i need to use the first arg for other things ;)
+    // if (ac > 2)
+    // {
+    //     throw std::runtime_error("Error: Check your Arguments!");
+    // }
+    // if (av[1])
+    //     this->file_name = av[1];
+    // else
         this->file_name = "conf/config.conf";
     std::string extention = &this->file_name[static_cast<int>(this->file_name.find(".") + 1)];
 }
@@ -286,8 +292,25 @@ std::vector<std::string> FileParss::ft_split(std::string const &str, char c)
 	std::stringstream ss(str);
 	std::string buff;
 
+    size_t i = 0;
 	while (getline(ss, buff, c))
+    {
+        if (buff.find("location") != std::string::npos)
+        {
+            if ((i = buff.find("{")) != std::string::npos)
+            {
+                for (size_t j = 0; j < i; j++)
+                {
+                    std::string str;
+                    str[j] = buff[j];
+                }
+                new_str.push_back(str);
+                // str.erase(0, str.length());
+                buff.erase(0, i);
+            }
+        }
 		new_str.push_back(buff);
+    }
 	return new_str;
 }
 
@@ -338,15 +361,18 @@ void    FileParss::file_check()
         throw std::runtime_error("ERROR: Bad Config File content [Check your Brackets[] or Braces()]");
 }
 
+// void    FileParss::removeRline()
+// {
+// }
 void    FileParss::get_file_content()
 {
     std::ifstream file(this->file_name.c_str());
     std::string tmp;
-    std::string new_string;
+    // std::string new_string = "";
     int i = 0;
     while(std::getline(file, tmp))
     {
-        ft_strtrim(tmp);
+        ft_strtrim(tmp); 
         if (tmp.empty() || tmp == "\n")
             continue;
         if(tmp[0] == COMMENTV1 || isspace(tmp[0]))
@@ -356,10 +382,14 @@ void    FileParss::get_file_content()
         if(tmp.find(COMMENTV2) != std::string::npos)
             remove_comments(tmp, COMMENTV2);
         ft_strtrim(tmp);
+        // new_string += tmp;
         file_content.push_back(tmp);
         i++;
     }
-    //_print(file_content, "vector");
+    // std::cout << new_string << std::endl;
+    // this->file_content = this->ft_split(new_string, ';');
+    // this->remove_Rline();
+    // _print(file_content, "vector");
 }
 
 FileParss::~FileParss() {}

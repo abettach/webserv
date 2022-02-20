@@ -5,6 +5,7 @@
 #define REQUEST_URI_MAX_LENGTH 2084
 #define HEADER_MAX_LENGTH 1000
 #define VALUE_MAX_LENGTH 4000
+
 class Request
 {
 private:

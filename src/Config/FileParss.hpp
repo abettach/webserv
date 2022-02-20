@@ -64,6 +64,7 @@ class FileParss
         void    run_body_size(std::string &, serverINFO &);
         void    run_location(int &, int , serverINFO &);
         void    add_location(serverINFO &, location &);
+        void    removeRline();
 
         void    locationAutoIndexRun(std::string &, location &);
         void    locationIndexRun(std::string &, location &);

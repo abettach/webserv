@@ -1,6 +1,7 @@
 #include "Request.hpp"
-
-std::string MYREQUEST = "GET /favicon.ico HTTP/1.1\r\n\
+/*********************************Request*******************************/
+std::string MYREQUEST =
+"GET /favicon.ico HTTP/1.1\r\n\
 Host: localhost:8800\r\n\
 Connection: keep-alive\r\n\
 sec-ch-ua: 'Not A;Brand';v='99', 'Chromium';v='96', 'Google Chrome';v='96'\r\n\
@@ -14,6 +15,8 @@ Sec-Fetch-Dest: image\r\n\
 Referer: http://localhost:8800/\r\n\
 Accept-Encoding: gzip, deflate, br\r\n\
 Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7\r\n";
+/************************************************************************/
+
 
 void	Request::printRequestInformation()
 {
@@ -34,7 +37,6 @@ Request::~Request()
 int		Request::Request_start(std::string _Request)
 {
 	int ret = 0;
-
 	this->request = _Request;
 	if ((ret = this->request_line()) || (ret = this->request_headers()))
 		return ret;
@@ -44,7 +46,7 @@ int		Request::Request_start(std::string _Request)
 int		Request::request_line()
 {
 	std::string methode;
-	bool _m = false;
+ 	bool _m = false;
 
 	if (request.find("\r\n") != std::string::npos)
 	{

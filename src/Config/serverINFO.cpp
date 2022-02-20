@@ -136,20 +136,22 @@ void    serverINFO::printServerData()
         std::cout << "\e[1;34mkey = \e[1;32m|" << it->first << "| \e[1;34mvalue = \e[1;32m|"+ it->second << "|" << std::endl;
 
     std::cout << "\e[1;33m///////////////////////LOACATION INFORMATION/////////////////\e[1;34m" << std::endl;
-    std::string arr[5] = {"/", "php", "py", "upload"};
+    std::vector<std::string> types;
+    for (std::map<std::string, location>::iterator it = locat.begin(); it != locat.end(); it++)
+        types.push_back(it->first);
     size_t i = 0;
     for (; i < locat.size() ; i++)
     {
         std::cout << "\e[1;31mlocation type = |";
-        std::cout << locat[arr[i]].getLocationExtention() << "|" << std::endl;
+        std::cout << locat[types[i]].getLocationExtention() << "|" << std::endl;
         std::cout << "\e[1;34mAutoIndex     = \e[1;32m|";
-        std::cout << locat[arr[i]].getLocationAutoIndex() << "|" << std::endl;
+        std::cout << locat[types[i]].getLocationAutoIndex() << "|" << std::endl;
         std::cout << "\e[1;34mIndex         = \e[1;32m|";
-        std::cout << locat[arr[i]].getLocationIndex() << "|" << std::endl;
+        std::cout << locat[types[i]].getLocationIndex() << "|" << std::endl;
         std::cout << "\e[1;34mfastCgiPass   = \e[1;32m|";
-        std::cout << locat[arr[i]].getLocationFastCgiPass() << "|" << std::endl;
+        std::cout << locat[types[i]].getLocationFastCgiPass() << "|" << std::endl;
         std::map<std::string , bool> test;
-        test = locat[arr[i]].getLocationAllowedMethods();
+        test = locat[types[i]].getLocationAllowedMethods();
         std::cout << "\e[1;34mGET           = \e[1;32m|" << test["GET"] << "|\e[1;34m, POST = \e[1;32m|" << test["POST"] << "|\e[1;34m, DELETE = \e[1;32m|" << test["DELETE"] << "|" << std::endl;
     }
 }
