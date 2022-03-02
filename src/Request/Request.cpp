@@ -141,3 +141,34 @@ int		Request::request_headers()
 	 }
 	 return EXIT_SUCCESS;
 }
+
+std::string &Request::getMethode()
+{
+	return this->methode;
+}
+
+std::string &Request::getTarget()
+{
+	return this->target;
+}
+
+std::string &Request::getProtocol()
+{
+	return this->protocol;
+}
+
+std::map<std::string, std::string> &Request::getHeaders()
+{
+	return this->headers;
+}
+
+int		&Request::getPort()
+{
+	std::string tmp;
+	for (std::map<std::string, std::string>::iterator it = this->headers.begin(); it != this->headers.end(); it++)
+		if (it->first == "Host")
+			tmp = it->second;
+	tmp.erase(0, tmp.find(":") + 1);
+	this->port = std::stoi(tmp);
+	return this->port;
+}

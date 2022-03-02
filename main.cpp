@@ -2,6 +2,7 @@
 #include "src/Config/FileParss.hpp"
 #include "src/Request/Request.hpp"
 #include "src/Response/Response.hpp"
+#include "src/Cgi/cgi.hpp"
 void    printServersINFO(std::vector<serverINFO> newServers)
 {
     for (size_t i = 0; i < newServers.size(); i++)
@@ -15,7 +16,7 @@ void    printServersINFO(std::vector<serverINFO> newServers)
         std::cout<<"/____/     \\____\\  )_) \\__/      \\/       \\____\\  )_) \\__/" << std::endl;
         std::cout<<"                            ["<<i<<"]                            " << std::endl;
         std::cout << std::endl;
-        newServers[i].printServerData();
+        newServers[i].printServerALLData();
     }
 }
 
@@ -28,7 +29,7 @@ int     main(int ac, char **av)
             FileParss parss(ac, av);
             //split all servers by port NB: use 'port' variable not 'ports' to get every server port
             std::vector<serverINFO> newServers = parss.SplitServers();
-            std::cout << newServers.size() << std::endl;
+            // std::cout << newServers[0].locat["php"].getLocationExtention() << std::endl;
             printServersINFO(newServers);
         }
         catch(const std::exception& e)
@@ -43,8 +44,15 @@ int     main(int ac, char **av)
     }
     else if (!strcmp(av[1], "response"))
     {
+        Response response;
+    }
+    else if (!strcmp(av[1], "CGI"))
+    {
         Request request;
-        Response response(request);
+        std::string cgi_path = "Nothing for now";
+        std::string root = "Nothing for now";
+        CGI _cgi;
+        _cgi.runCGI(request, cgi_path, root);
     }
     return 0;
 }

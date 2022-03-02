@@ -8,10 +8,16 @@ class Request;
 class Response
 {
 private:
-    /* data */
+    Request _request;
+    std::string _statusLine;
+    std::map<std::string, std::string> _headers;
+    std::string _httpVersion;
+    int         _statusCode;
+    std::string _reasonPhrase;
+
 public:
     Response(/* args */);
-    Response(Request request);
+    std::string     &getStatusLine();
     ~Response();
 };
 

@@ -137,10 +137,8 @@ void    serverINFO::printServerData()
 
     std::cout << "\e[1;33m///////////////////////LOACATION INFORMATION/////////////////\e[1;34m" << std::endl;
     std::vector<std::string> types;
-    for (std::map<std::string, location>::iterator it = locat.begin(); it != locat.end(); it++)
-        types.push_back(it->first);
-    size_t i = 0;
-    for (; i < locat.size() ; i++)
+    for (std::map<std::string, location>::iterator it = locat.begin(); it != locat.end(); it++) types.push_back(it->first);
+    for (size_t i = 0; i < locat.size() ; i++)
     {
         std::cout << "\e[1;31mlocation type = |";
         std::cout << locat[types[i]].getLocationExtention() << "|" << std::endl;
@@ -168,23 +166,36 @@ void    serverINFO::printServerALLData()
     std::cout << "\e[1;31mError_pages :"<<std::endl;
     for (std::map<int,std::string>::iterator it = this->error_pages.begin(); it != this->error_pages.end(); it++)
         std::cout << "\e[1;34mkey = \e[1;32m|" << it->first << "| \e[1;34mvalue = \e[1;32m|"+ it->second << "|" << std::endl;
-
     std::cout << "\e[1;33m///////////////////////LOACATION INFORMATION/////////////////\e[1;34m" << std::endl;
     std::vector<std::string> types;
-    for (std::map<std::string, location>::iterator it = locat.begin(); it != locat.end(); it++)
-        types.push_back(it->first);
+    for (std::map<std::string, location>::iterator it = locat.begin(); it != locat.end(); it++) types.push_back(it->first);
     for (size_t i = 0; i < types.size() ; i++)
     {
         std::cout << "\e[1;31mlocation type = |";
         std::cout << locat[types[i]].getLocationExtention() << "|" << std::endl;
-        std::cout << "\e[1;34mAutoIndex     = \e[1;32m|";
-        std::cout << locat[types[i]].getLocationAutoIndex() << "|" << std::endl;
-        std::cout << "\e[1;34mIndex         = \e[1;32m|";
-        std::cout << locat[types[i]].getLocationIndex() << "|" << std::endl;
-        std::cout << "\e[1;34mfastCgiPass   = \e[1;32m|";
-        std::cout << locat[types[i]].getLocationFastCgiPass() << "|" << std::endl;
-        std::map<std::string , bool> test;
-        test = locat[types[i]].getLocationAllowedMethods();
-        std::cout << "\e[1;34mGET           = \e[1;32m|" << test["GET"] << "|\e[1;34m, POST = \e[1;32m|" << test["POST"] << "|\e[1;34m, DELETE = \e[1;32m|" << test["DELETE"] << "|" << std::endl;
+        if (locat[types[i]].getLocationExtention().find("upload") == std::string::npos && locat[types[i]].getLocationExtention().find("return") == std::string::npos)
+        {
+            std::cout << "\e[1;34mAutoIndex     = \e[1;32m|";
+            std::cout << locat[types[i]].getLocationAutoIndex() << "|" << std::endl;
+            std::cout << "\e[1;34mIndex         = \e[1;32m|";
+            std::cout << locat[types[i]].getLocationIndex() << "|" << std::endl;
+            std::cout << "\e[1;34mfastCgiPass   = \e[1;32m|";
+            std::cout << locat[types[i]].getLocationFastCgiPass() << "|" << std::endl;
+        }
+        if (locat[types[i]].getLocationExtention().find("upload") != std::string::npos)
+        {
+            std::cout << "\e[1;34mupload_enable = \e[1;32m|";
+            std::cout << locat[types[i]].getLocationUploadEnable() << "|" << std::endl;
+            std::cout << "\e[1;34mupload_store  = \e[1;32m|";
+            std::cout << locat[types[i]].getLocationUploadStore() << "|" << std::endl;
+        }
+        if (locat[types[i]].getLocationExtention().find("return") != std::string::npos)
+            std::cout << "\e[1;34mReturn        = \e[1;32m|" << locat[types[i]].getLocationReturnCode() << "|" << std::endl;
+        if (locat[types[i]].getLocationExtention().find("return") == std::string::npos)
+        {
+            std::map<std::string , bool> test;
+            test = locat[types[i]].getLocationAllowedMethods();
+            std::cout << "\e[1;34mGET           = \e[1;32m|" << test["GET"] << "|\e[1;34m, POST = \e[1;32m|" << test["POST"] << "|\e[1;34m, DELETE = \e[1;32m|" << test["DELETE"] << "|" << std::endl;
+        }
     }
 }

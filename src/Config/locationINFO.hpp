@@ -10,6 +10,9 @@ class location
         std::string type;
         std::string index;
         bool autoindex;
+        bool UploadEnable;
+        std::string UploadStore;
+        size_t  ReturnCode;
         std::string fastcgi_pass;
         std::map<std::string, bool> allowed_methode;
     public:
@@ -24,6 +27,13 @@ class location
         bool 		getLocationAutoIndex();
         void 		setLocationFastCgiPass(std::string _fastcgi_pass);
         std::string getLocationFastCgiPass();
+        void        setLocationUploadEnable(bool _UploadEnable);
+        bool        getLocationUploadEnable();
+        void        setLocationUploadStore(std::string _UploadStore);
+        std::string        getLocationUploadStore();
+        void        setLocationReturnCode(size_t    &);
+        size_t      &getLocationReturnCode();
+
         void    	clearAll();
         void setLocationAllowedMethods(std::map<std::string, bool> _allowed_methode);
         std::map<std::string, bool> getLocationAllowedMethods();

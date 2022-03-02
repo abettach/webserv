@@ -60,7 +60,32 @@ std::map<std::string, bool> location::getLocationAllowedMethods()
     return this->allowed_methode;
 }
 
+void location::setLocationUploadEnable(bool _UploadEnable)
+{
+    this->UploadEnable = _UploadEnable;
+}
+bool location::getLocationUploadEnable()
+{
+    return this->UploadEnable;
+}
 
+void location::setLocationUploadStore(std::string _UploadStore)
+{
+    this->UploadStore = _UploadStore;
+}
+std::string location::getLocationUploadStore()
+{
+    return this->UploadStore;
+}
+
+void    location::setLocationReturnCode(size_t &_returnCode)
+{
+    this->ReturnCode = _returnCode;
+}
+size_t  &location::getLocationReturnCode()
+{
+    return this->ReturnCode;
+}
 void    location::clearAll()
 {
     this->Locationtype.erase(0, strlen(this->Locationtype.c_str()));

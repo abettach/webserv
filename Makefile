@@ -8,7 +8,8 @@ SRCS = main.cpp \
 		src/Config/serverINFO.cpp \
 		src/Config/locationINFO.cpp \
 		src/Request/Request.cpp \
-		src/Response/Response.cpp
+		src/Response/Response.cpp \
+		src/Cgi/cgi.cpp
 
 OBJDIR = obj
 
@@ -28,6 +29,8 @@ parss:
 	@make re && make clean && ./webserv parssing
 res:
 	@make re && make clean && ./webserv response
+cgi:
+	@make re && make clean && ./webserv CGI
 
 
 # $(OBJDIR):

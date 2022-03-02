@@ -2,7 +2,7 @@
 #define FileParssE_HPP
 #include "../../headers.hpp"
 
-#define LOCATION_MAX_ELEMENT 4
+#define LOCATION_MAX_ELEMENT 7
 #define SERVER_MAX_ELEMENT 6
 #define FILE_EXTENTION "conf"
 #define INVALIDE_FILE_NAME "Error: Invalide File Name"
@@ -21,6 +21,9 @@
 #define ALLOW_METHODS "allow_methods"
 #define FASTCGI_PASS "fastcgi_pass"
 #define ROOT_DIR "root"
+#define RETURN "return"
+#define UPLOAD_ENABLE "upload_enable"
+#define UPLOAD_STORE  "upload_store"
 #define OPEN_BRACE "{"
 #define CLOSE_BRACE "}"
 #define OPEN_BRACKET "["
@@ -70,10 +73,15 @@ class FileParss
         void    locationIndexRun(std::string &, location &);
         void    locationFastCgiPassRun(std::string &, location &);
         void    locationAllowMethodsRun(std::string &, location &);
+        void    locationUploadEnable(std::string &, location &);
+        void    locationUploadStore(std::string &, location &);
+        void    locationReturn(std::string &, location &);
         location    getlocationInfo(int &, int &);
         void    getTypeExtention(std::string &);
         std::vector<serverINFO>    SplitServers();
         void    init_pointer(bool);
+        void   ft_clean(std::vector<std::string> str);
+        bool    isValideMethode(std::string tmp);
 };
 
 template <typename T>

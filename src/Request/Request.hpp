@@ -13,6 +13,7 @@ private:
 	std::string methode;
 	std::string target;
 	std::string protocol;
+	int			port;
 	std::map<std::string, std::string> headers;
 
 public:
@@ -22,6 +23,11 @@ public:
 	int		request_line();
 	int		request_headers();
 	void	printRequestInformation();
+	std::string &getMethode();
+	std::string &getTarget();
+	std::string &getProtocol();
+	int			&getPort();
+	std::map<std::string, std::string> &getHeaders();
 };
 
 #endif
