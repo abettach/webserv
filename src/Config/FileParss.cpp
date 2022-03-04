@@ -246,6 +246,19 @@ void    FileParss::init_pointer(bool location)
     }
 }
 
+bool        isNotValidLocation(std::string _content)
+{
+    if (_content.find(AUTOINDEX) == std::string::npos &&
+    _content.find(INDEX) == std::string::npos &&
+    _content.find(FASTCGI_PASS)== std::string::npos &&
+    _content.find(ALLOW_METHODS)== std::string::npos &&
+    _content.find(UPLOAD_ENABLE)== std::string::npos &&
+    _content.find(UPLOAD_STORE)== std::string::npos &&
+    _content.find(RETURN) == std::string::npos)
+        return true;
+    return false;
+}
+
 location    FileParss::getlocationInfo(int &start, int &end)
 {
     location sv_loc = location();
@@ -257,13 +270,17 @@ location    FileParss::getlocationInfo(int &start, int &end)
     if (tmp_type.empty())
         throw std::runtime_error("Error: Check Your Location!");
     sv_loc.setLocationExtention(tmp_type);
-    for (int i = start + 1; i < end; i++)
+    for (int i = start + 2; i < end; i++)
         for (size_t count = 0; count < LOCATION_MAX_ELEMENT ; count++)
+        {
+            if (isNotValidLocation(this->file_content[i]))
+                throw std::runtime_error("Error: Check Your Location '" + tmp_type + "'");
             if(this->file_content[i].find(arr[count])!= std::string::npos)
             {
                 (this->*location_pointer[count])(this->file_content[i],sv_loc);
                 break;
             }
+        }
     return sv_loc;
 }
 
@@ -292,6 +309,19 @@ std::vector<serverINFO> FileParss::getServer()
     return this->server;
 }
 
+bool    isNotValid(std::string _content)
+{
+    if (_content.find(LISTEN) == std::string::npos && 
+    _content.find(HOST) == std::string::npos &&
+    _content.find(SERVER_NAME) == std::string::npos &&
+    _content.find(CLIENT_BODY_SIZE) == std::string::npos &&
+    _content.find(ERROR_PAGE) == std::string::npos &&
+    _content.find(ROOT_DIR) == std::string::npos &&
+    _content.find(LOCATION) == std::string::npos)
+        return true;
+    return false;
+}
+
 void    FileParss::get_elements()
 {
     int start, end;
@@ -308,6 +338,8 @@ void    FileParss::get_elements()
             for (size_t count = 0; count < 6; count++)
             {
                 isNotLocation = false;
+                if (isNotValid(this->file_content[start]))
+                    throw std::runtime_error("Error: Check You Config File `[" + this->file_content[start] + "]` Is Not Valide!");
                 if (this->file_content[start].find(arr[count]) != std::string::npos)
                 {
                     isNotLocation = true;
@@ -432,7 +464,7 @@ void    FileParss::file_check()
         open_brace -= std::count(tmp.begin(), tmp.end(), '}');
     }
     if (open_brace != 0 || open_bracket != 0)
-        throw std::runtime_error("ERROR: Bad Config File content [Check your Brackets[] or Braces()]");
+        throw std::runtime_error("Error: Check You Config File!");
 }
 
 void   FileParss::ft_clean(std::vector<std::string> str)
@@ -458,14 +490,9 @@ void    FileParss::get_file_content()
         if(tmp[0] == COMMENTV1 || isspace(tmp[0])) continue;
         if(tmp.find(COMMENTV1) != std::string::npos)
             remove_comments(tmp, COMMENTV1);
-        if (!tmp.compare("server")
-        || tmp.find("location") != std::string::npos
-        || tmp.find("[") != std::string::npos
-        || tmp.find("]") != std::string::npos
-        || tmp.find("{") != std::string::npos
-        || tmp.find("}")!= std::string::npos)
-            tmp += ';';
         ft_strtrim(tmp);
+        if (tmp[tmp.size() - 1] != ';')
+            tmp += ';';
         new_string += tmp;
         i++;
     }

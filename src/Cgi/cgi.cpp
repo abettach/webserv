@@ -13,13 +13,13 @@ void    CGI::runCGI(Request &_request, std::string &root,  std::string &cgi_path
     // pid_t   pid;
 
     // setenv("CONTENT_LENGTH",/*get the content length from the request*/, 1);
-    // setenv("GATEWAY_INTERFACE", "CGI/1.1", 1);
-    // setenv("SERVER_PROTOCOL", "HTTP/1.1", 1);
-    // setenv("SERVER_PORT", /*get the server port from the request*/, 1);
-    // setenv("REQUEST_METHOD", /*get the request methde from the request*/, 1);
-    // setenv("SERVER_NAME", /*get the servers name from the config file*/, 1);
-    // // setenv("REDIRECT_STATUS", "1", 1);
-    // setenv("PATH_INFO", /*get the URI from the request*/, 1);
+    setenv("GATEWAY_INTERFACE", "CGI/1.1", 1);
+    setenv("SERVER_PROTOCOL", "HTTP/1.1", 1);
+    setenv("SERVER_PORT", std::to_string(_request.getPort()).c_str(), 1);
+    setenv("REQUEST_METHOD", _request.getMethode().c_str(), 1);
+    setenv("SERVER_NAME", "webserv", 1);
+    // setenv("REDIRECT_STATUS", "1", 1);
+    setenv("PATH_INFO", "/Users/abettach/Desktop/webserv", 1);
     // setenv("QUERY_STRING", /*get the query string from the request*/, 1);
 
     // pipe(pipefd[2]);
@@ -30,7 +30,7 @@ void    CGI::runCGI(Request &_request, std::string &root,  std::string &cgi_path
     //     dup2(pipefd[0], 0);
     //     close(pipefd[1]);
     //     close(pipefd[0]);
-    //     argv[0] = cgi_path.c_str();
+        // argv[0] = cgi_path.c_str();
     //     argv[1] = /*request uri*/.c_str();
     //     argv[2] = NULL;
     //     dup2(fd, STDOUT_FILENO);
