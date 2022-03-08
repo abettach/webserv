@@ -28,6 +28,8 @@ void    FileParss::get_servers_index()
             servers_index.push_back(i);
         else if (file_content[i].compare("]") == 0)
             servers_index.push_back(i);
+        if (!this->file_content[i].compare("[") && this->file_content[i - 1].find(SERVER) == std::string::npos)
+            throw std::runtime_error("Error: Check You Config File!");
     }
 }
 
@@ -61,6 +63,9 @@ void    FileParss::run_error_pages(std::string &tmp, serverINFO &sv)
     for (size_t i = 0; i < tmp.size(); i++)
         if (tmp[i] == ' ' || tmp[i] == '\t')
             throw std::runtime_error("Error: Check Your ERROR_PAGE!");
+    std::ifstream file(tmp.c_str());
+    if (!file.is_open())
+        throw std::runtime_error("Error: Error Page [" + tmp +"] Dosnt Exist!");
     sv.setErrorPage(tmp, error_num);
 }
 
@@ -73,6 +78,9 @@ void    FileParss::run_root_dir(std::string &tmp, serverINFO &sv)
     for (size_t i = 0; i < tmp.size(); i++)
         if (tmp[i] == ' ' || tmp[i] == '\t')
             throw std::runtime_error("Error: Check Your Root!");
+    std::ifstream file(tmp.c_str());
+    // if (!file.is_open())
+    //     throw std::runtime_error("Error: Error Page [" + tmp +"] Dosnt Exist!");
     sv.setRootDir(tmp);
 }
 void    FileParss::run_server_name(std::string &tmp, serverINFO &sv)

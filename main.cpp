@@ -1,4 +1,5 @@
 // #include "src/HTTPServer/HTTPserver.hpp"
+#include "src/Server/Server.hpp"
 #include "src/Config/FileParss.hpp"
 #include "src/Request/Request.hpp"
 #include "src/Response/Response.hpp"
@@ -29,8 +30,13 @@ int     main(int ac, char **av)
             FileParss parss(ac, av);
             //split all servers by port NB: use 'port' variable not 'ports' to get every server port
             std::vector<serverINFO> newServers = parss.SplitServers();
+
+        // std::string cgi_path = "/Users/abettach/goinfre/.brew/bin/php-cgi";
+        // std::string root = "/Users/abettach/Desktop/webserv";
             // std::cout << newServers[0].locat["php"].getLocationExtention() << std::endl;
-            printServersINFO(newServers);
+            // printServersINFO(newServers);
+            Server server(newServers);
+        // std::cout << _cgi.runCGI(request, root, cgi_path) << std::endl;
         }
         catch(const std::exception& e)
         {
@@ -49,10 +55,7 @@ int     main(int ac, char **av)
     else if (!strcmp(av[1], "CGI"))
     {
         Request request;
-        std::string cgi_path = "Nothing for now";
-        std::string root = "Nothing for now";
         CGI _cgi;
-        _cgi.runCGI(request, cgi_path, root);
     }
     return 0;
 }

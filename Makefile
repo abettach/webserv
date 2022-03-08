@@ -9,7 +9,8 @@ SRCS = main.cpp \
 		src/Config/locationINFO.cpp \
 		src/Request/Request.cpp \
 		src/Response/Response.cpp \
-		src/Cgi/cgi.cpp
+		src/Cgi/cgi.cpp \
+		src/Server/Server.cpp
 
 OBJDIR = obj
 

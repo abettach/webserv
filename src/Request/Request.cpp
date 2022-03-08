@@ -1,4 +1,5 @@
 #include "Request.hpp"
+#include "../Cgi/cgi.hpp"
 /*********************************Request*******************************/
 std::string MYREQUEST =
 "GET /favicon.ico HTTP/1.1\r\n\
@@ -26,10 +27,7 @@ void	Request::printRequestInformation()
 	for (std::map<std::string, std::string>::iterator it = this->headers.begin(); it != this->headers.end(); it++)
 		std::cout << "\e[1;32m" << it->first << ":\e[1;36m " << it->second <<"\e[1;37m" << std::endl;
 }
-Request::Request()
-{
-	std::cout << "\e[1;31mstatus Code: \e[1;33m|" << Request_start(MYREQUEST) << "|\e[1;37m" << std::endl;
-}
+Request::Request(){}
 
 Request::~Request()
 {
@@ -40,6 +38,10 @@ int		Request::Request_start(std::string _Request)
 	this->request = _Request;
 	if ((ret = this->request_line()) || (ret = this->request_headers()))
 		return ret;
+	std::cout << BYEL <<"+++++++++++++++++++++++++++++Request+++++++++++++++++++++++++++++++" << BWHT <<std::endl;
+	printRequestInformation();
+	std::cout << BYEL << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"<< BWHT << std::endl;
+
 	return 0;
 }
 

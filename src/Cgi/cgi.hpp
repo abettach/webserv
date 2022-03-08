@@ -10,7 +10,7 @@ class CGI
 private:
 public:
     CGI(/* args */);
-    void    runCGI(Request &, std::string &, std::string &);
+    std::string    runCGI(Request &, std::string &, std::string &);
     ~CGI();
 };
 
