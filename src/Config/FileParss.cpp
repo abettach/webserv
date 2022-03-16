@@ -155,7 +155,7 @@ void    FileParss::locationUploadEnable(std::string &tmp, location &sv_loc)
         sv_loc.setLocationUploadEnable(true);
     else if (!tmp.compare("off"))
         sv_loc.setLocationUploadEnable(false);
-    else if (sv_loc.getLocationExtention().find("upload") != std::string::npos)
+    else if (sv_loc.getLocationPath().find("upload") != std::string::npos)
         throw std::runtime_error("Error: Location autoindex must be 'on' or 'off'!");
     else
         sv_loc.setLocationUploadEnable(false);
@@ -165,7 +165,7 @@ void    FileParss::locationUploadStore(std::string &tmp, location &sv_loc)
 {
     tmp.erase(0,strlen(UPLOAD_STORE));
     ft_strtrim(tmp);
-    if (tmp.empty() && sv_loc.getLocationExtention().find("upload") != std::string::npos)
+    if (tmp.empty() && sv_loc.getLocationPath().find("upload") != std::string::npos)
         throw std::runtime_error("Error: Check You Location uploade_store!");
     else
     {
@@ -181,7 +181,7 @@ void    FileParss::locationReturn(std::string &tmp, location &sv_loc)
     size_t _return;
     tmp.erase(0,strlen(RETURN));
     ft_strtrim(tmp);
-    if (tmp.empty() && sv_loc.getLocationExtention().find("return") != std::string::npos)
+    if (tmp.empty() && sv_loc.getLocationPath().find("return") != std::string::npos)
         throw std::runtime_error("Error: Check You Location return!");
     else
     {

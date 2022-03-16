@@ -2,7 +2,7 @@
 
 CGI::CGI(/* args */){}
 
-std::string    CGI::runCGI(Request &_request, std::string &root,  std::string &cgi_path)
+std::string    CGI::runCGI(Request _request, std::string root,  std::string cgi_path)
 {
     char const *argv[3];
     int Ifd[2];
@@ -20,7 +20,8 @@ std::string    CGI::runCGI(Request &_request, std::string &root,  std::string &c
     setenv("SERVER_NAME", "webserv", 1);
     setenv("REDIRECT_STATUS", "1", 1);
     setenv("PATH_INFO", "/Users/abettach/Desktop/webserv", 1);
-    setenv("SCRIPT_FILENAME", "/Users/abettach/Desktop/webserv/src/files/cgi-files/test.php", 1);//root + _req.getTarget()
+    std::cout << "my file name = " <<( root + _request.getTarget()).c_str() << std::endl;
+    setenv("SCRIPT_FILENAME", (root + _request.getTarget()).c_str(), 1);//root + _req.getTarget()
     // setenv("QUERY_STRING", /*get the query string from the request*/, 1);
     if (pipe(Ifd) || pipe(Ofd))
         perror("[CGI ERROR] PIPE");
@@ -36,7 +37,7 @@ std::string    CGI::runCGI(Request &_request, std::string &root,  std::string &c
         // close(Ofd[0]);
         close(Ifd[1]);
         argv[0] = cgi_path.c_str();
-        file_path = "/Users/abettach/Desktop/webserv/src/files/cgi-files/test.php"; // SCRIPT_FILENAME in env :)
+        file_path = (root + _request.getTarget()).c_str(); // SCRIPT_FILENAME in env :)
         argv[1] = file_path.c_str();
         argv[2] = NULL;            
         if (execve(argv[0], (char* const*)argv, environ) == -1)
@@ -49,10 +50,11 @@ std::string    CGI::runCGI(Request &_request, std::string &root,  std::string &c
         // close(Ofd[1]);
         int ret = 1;
         char buffer[1024];
-        while ((ret = read(Ifd[0], buffer, 1024)))
+        while (ret)
         {
-            content += buffer;
             memset(buffer, 0, 1024);
+            ret = read(Ifd[0], buffer, 1024);
+            content += buffer;
         }
         close(Ifd[0]);
         waitpid(pid, nullptr, 0);

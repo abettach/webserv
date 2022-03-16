@@ -18,7 +18,7 @@ class location
     public:
         // ~location();
         void		setLocationExtention(std::string _type);
-        std::string getLocationExtention();
+        std::string getLocationPath();
         void		setLocationType(std::string _type);
         std::string	getLocationType();
         std::string getLocationIndex();
@@ -33,6 +33,7 @@ class location
         std::string        getLocationUploadStore();
         void        setLocationReturnCode(size_t    &);
         size_t      &getLocationReturnCode();
+        std::string     getLocationExtention();
 
         void    	clearAll();
         void setLocationAllowedMethods(std::map<std::string, bool> _allowed_methode);

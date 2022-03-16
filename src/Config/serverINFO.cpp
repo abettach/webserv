@@ -75,6 +75,10 @@ int    serverINFO::getClienBodySize()
     return (this->client_max_body_size);
 }
 
+std::map<std::string, location>     serverINFO::getLocations()
+{
+    return this->locat;
+}
 //****************Location to the server*********************
 
 void serverINFO::ft_strtrim(std::string &str)
@@ -141,7 +145,7 @@ void    serverINFO::printServerData()
     for (size_t i = 0; i < locat.size() ; i++)
     {
         std::cout << "\e[1;31mlocation type = |";
-        std::cout << locat[types[i]].getLocationExtention() << "|" << std::endl;
+        std::cout << locat[types[i]].getLocationPath() << "|" << std::endl;
         std::cout << "\e[1;34mAutoIndex     = \e[1;32m|";
         std::cout << locat[types[i]].getLocationAutoIndex() << "|" << std::endl;
         std::cout << "\e[1;34mIndex         = \e[1;32m|";
@@ -153,6 +157,7 @@ void    serverINFO::printServerData()
         std::cout << "\e[1;34mGET           = \e[1;32m|" << test["GET"] << "|\e[1;34m, POST = \e[1;32m|" << test["POST"] << "|\e[1;34m, DELETE = \e[1;32m|" << test["DELETE"] << "|" << std::endl;
     }
 }
+
 
 void    serverINFO::printServerALLData()
 {
@@ -172,8 +177,8 @@ void    serverINFO::printServerALLData()
     for (size_t i = 0; i < types.size() ; i++)
     {
         std::cout << "\e[1;31mlocation type = |";
-        std::cout << locat[types[i]].getLocationExtention() << "|" << std::endl;
-        if (locat[types[i]].getLocationExtention().find("upload") == std::string::npos && locat[types[i]].getLocationExtention().find("return") == std::string::npos)
+        std::cout << locat[types[i]].getLocationPath() << "|" << std::endl;
+        if (locat[types[i]].getLocationPath().find("upload") == std::string::npos && locat[types[i]].getLocationPath().find("return") == std::string::npos)
         {
             std::cout << "\e[1;34mAutoIndex     = \e[1;32m|";
             std::cout << locat[types[i]].getLocationAutoIndex() << "|" << std::endl;
@@ -182,16 +187,16 @@ void    serverINFO::printServerALLData()
             std::cout << "\e[1;34mfastCgiPass   = \e[1;32m|";
             std::cout << locat[types[i]].getLocationFastCgiPass() << "|" << std::endl;
         }
-        if (locat[types[i]].getLocationExtention().find("upload") != std::string::npos)
+        if (locat[types[i]].getLocationPath().find("upload") != std::string::npos)
         {
             std::cout << "\e[1;34mupload_enable = \e[1;32m|";
             std::cout << locat[types[i]].getLocationUploadEnable() << "|" << std::endl;
             std::cout << "\e[1;34mupload_store  = \e[1;32m|";
             std::cout << locat[types[i]].getLocationUploadStore() << "|" << std::endl;
         }
-        if (locat[types[i]].getLocationExtention().find("return") != std::string::npos)
+        if (locat[types[i]].getLocationPath().find("return") != std::string::npos)
             std::cout << "\e[1;34mReturn        = \e[1;32m|" << locat[types[i]].getLocationReturnCode() << "|" << std::endl;
-        if (locat[types[i]].getLocationExtention().find("return") == std::string::npos)
+        if (locat[types[i]].getLocationPath().find("return") == std::string::npos)
         {
             std::map<std::string , bool> test;
             test = locat[types[i]].getLocationAllowedMethods();

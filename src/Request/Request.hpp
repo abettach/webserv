@@ -28,6 +28,8 @@ public:
 	std::string &getProtocol();
 	int			&getPort();
 	std::map<std::string, std::string> &getHeaders();
+	std::string	autoindex_run(std::string rooted_path);
+
 };
 
 #endif

@@ -28,15 +28,19 @@ int     main(int ac, char **av)
         try
         {
             FileParss parss(ac, av);
+            Request _request;
+            // std::string test = "hello";
+            // _request.Request_start(test);
+            Response resp;
             //split all servers by port NB: use 'port' variable not 'ports' to get every server port
             std::vector<serverINFO> newServers = parss.SplitServers();
 
-        // std::string cgi_path = "/Users/abettach/goinfre/.brew/bin/php-cgi";
-        // std::string root = "/Users/abettach/Desktop/webserv";
-            // std::cout << newServers[0].locat["php"].getLocationExtention() << std::endl;
+            // std::string cgi_path = "/Users/abettach/goinfre/.brew/bin/php-cgi";
+            // std::string root = "/Users/abettach/Desktop/webserv";
+            // std::cout << newServers[0].locat["php"].getLocationPath() << std::endl;
             // printServersINFO(newServers);
             Server server(newServers);
-        // std::cout << _cgi.runCGI(request, root, cgi_path) << std::endl;
+            // std::cout << _cgi.runCGI(request, root, cgi_path) << std::endl;
         }
         catch(const std::exception& e)
         {
@@ -45,8 +49,10 @@ int     main(int ac, char **av)
     }
     else if (!strcmp(av[1], "request"))
     {
+        std::string test = "NOne";
         Request request;
-        request.printRequestInformation();
+        request.Request_start(test);
+        // request.printRequestInformation();
     }
     else if (!strcmp(av[1], "response"))
     {

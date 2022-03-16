@@ -151,6 +151,8 @@ std::string &Request::getMethode()
 
 std::string &Request::getTarget()
 {
+	if (this->target[0] != '/')
+		this->target = "/" + this->target;
 	return this->target;
 }
 
@@ -163,6 +165,7 @@ std::map<std::string, std::string> &Request::getHeaders()
 {
 	return this->headers;
 }
+
 
 int		&Request::getPort()
 {

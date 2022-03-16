@@ -445,11 +445,13 @@ void Server::responseHandling(int &accptSockFD)
     // std::cout << _cgi.runCGI(_request, root, cgi_path) << std::endl;
 	// body = _cgi.runCGI(_request, root, cgi_path).substr(64,_cgi.runCGI(_request, root, cgi_path).size());
 	// std::cout << body << std::endl;
-	if (path.size() == 0)
-		body = get_body("index.html");
-	else
-		body = get_body(path);
-	std::string all = std::string(header) + std::string(ft_itoa(body.size())) + "\r\n\r\n" + body;
+	Response _resp;
+	_resp.creatResponse(this->_servers, this->_request);
+	// if (path.size() == 0 || path == "/")
+	// 	body = get_body("index.html");
+	// else
+	// 	body = get_body(path);
+	std::string all = std::string(header) + std::string(ft_itoa(_resp.GetBody().size())) + "\r\n\r\n" + _resp.GetBody();
 
 	if (FD_ISSET(accptSockFD, &_writeFDs))
 	{

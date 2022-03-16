@@ -4,7 +4,7 @@ void location::setLocationExtention(std::string _Locationtype)
 {
     this->Locationtype = _Locationtype;
 }
-std::string location::getLocationExtention()
+std::string location::getLocationPath()
 {
     return this->Locationtype;
 }
@@ -30,7 +30,7 @@ std::string location::getLocationIndex()
     return this->index;
 }
 
-
+ 
 void location::setLocationAutoIndex(bool _AutoIndex)
 {
     this->autoindex = _AutoIndex;
@@ -86,6 +86,15 @@ size_t  &location::getLocationReturnCode()
 {
     return this->ReturnCode;
 }
+
+std::string     location::getLocationExtention()
+{
+    std::string path = this->getLocationPath();
+    if (path.find(".") != std::string::npos)
+        return (path.substr(path.find(".") + 1, path.length()));
+    return path;
+}
+
 void    location::clearAll()
 {
     this->Locationtype.erase(0, strlen(this->Locationtype.c_str()));
