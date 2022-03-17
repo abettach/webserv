@@ -30,7 +30,7 @@ std::string location::getLocationIndex()
     return this->index;
 }
 
- 
+
 void location::setLocationAutoIndex(bool _AutoIndex)
 {
     this->autoindex = _AutoIndex;

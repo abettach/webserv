@@ -105,11 +105,15 @@ void    Response::get_body(std::string file_name)
 
 void    Response::getMethode(std::string _uri, Request _request)
 {
-    std::cout << "Im in GetMethode" << std::endl;
     std::cout << "uri = " << _uri << std::endl;
-    std::cout << this->_location.getLocationPath() << std::endl;
+    if (this->isLocation)
+        std::cout << "My Location:" << this->_location.getLocationPath() << std::endl;
+    else
+        std::cout << "My Location:" << "No Location Found!!" << std::endl;
     std::cout << "autoindex : " << this->_location.getLocationAutoIndex() << std::endl;
-    std::cout << "inde :" << this->_location.getLocationIndex() << std::endl;
+    std::cout << "index :" << this->_location.getLocationIndex() << std::endl;
+    std::cout << "CGI status :" << isCGI << std::endl;
+    std::cout << "Location status:" << isLocation << std::endl;
     if (this->isLocation)
     {
         if (this->isCGI)
@@ -118,7 +122,9 @@ void    Response::getMethode(std::string _uri, Request _request)
             if (!allowedMethods["GET"])
                 throw std::runtime_error("Error: GET Not Allowed");
             this->_body = _cgi.runCGI(_request, this->_server.getRootDir(), this->_location.getLocationFastCgiPass()).substr(67,_cgi.runCGI(_request, this->_server.getRootDir(), this->_location.getLocationFastCgiPass()).size());
+            std::cout << "*********************************CGI Body*******************************" << std::endl;
             std::cout << this->_body << std::endl;
+            std::cout << "************************************************************************" << std::endl;
         }
         if (this->_location.getLocationAutoIndex() && this->_location.getLocationIndex().empty())
             this->_body = autoindex_run(_uri, _request);       
@@ -133,7 +139,6 @@ void    Response::getMethode(std::string _uri, Request _request)
         }
         else if (!this->_location.getLocationAutoIndex() && this->_location.getLocationIndex().empty() && !this->_location.getLocationPath().compare("/"))
         {
-            std::cout << "im here joihjoiio" << std::endl;
             std::string filePath = this->_server.getRootDir() + _request.getTarget() + "/" + "index.html";
             std::ifstream file(filePath.c_str());
             if (!file.is_open())
@@ -157,7 +162,6 @@ int    Response::CheckForPerfectMatch(std::string _path, std::vector<location> _
         std::cout << "path =|" << _path << "|, location path=|" << it->getLocationPath() << "|" << std::endl;
         if (_path == it->getLocationPath())
         {
-            std::cout << "im here" << std::endl;
             this->_location = *it;
             return 1;
         }
@@ -208,8 +212,6 @@ void    Response::creatBody(std::vector<serverINFO> &_servers, Request &_request
     if (this->CheckForPerfectMatch(RequestPath, myLocations) ||
         this->CheckForMatchOne(RequestPath, myLocations))
         isLocation = true;
-    std::cout << "CGI status :" << isCGI << std::endl;
-    std::cout << "Location status:" << isLocation << std::endl;
     // std::map<std::string, bool> allowedMethods = this->_location.getLocationAllowedMethods();
     // if (!allowedMethods[_request.getMethode()])
     // {
@@ -222,10 +224,7 @@ void    Response::creatBody(std::vector<serverINFO> &_servers, Request &_request
     //**********************************************************************************
     std::cout << "methode = " << _request.getMethode() << std::endl;
     if (!_request.getMethode().compare("GET"))
-    {
-        std::cout << "WTF is this" << std::endl;
         getMethode(this->_server.getRootDir() + _request.getTarget(), _request);
-    }
     // else if (!_request.getMethode().compare("POST"))
     //     PostMethode(_request.getTarget());
     // else if (!_request.getTarget().compare("DELETE"))
@@ -241,7 +240,7 @@ void    Response::creatResponse(std::vector<serverINFO> &_servers, Request &_req
     // this->_resp = "HTTP/1.1 ";
     // this->_resp.append(std::to_string(_statusCode));
     // this->_resp.append(" ");
-    // this->_resp.append(getStatusCodeSTR());
+    // this->_resp.append(getStatusCode());
 }
 
 Response::~Response()

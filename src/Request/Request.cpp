@@ -29,20 +29,42 @@ void	Request::printRequestInformation()
 }
 Request::Request(){}
 
-Request::~Request()
+Request::~Request() : _status(200)
 {
 }
 int		Request::Request_start(std::string _Request)
 {
 	int ret = 0;
 	this->request = _Request;
-	if ((ret = this->request_line()) || (ret = this->request_headers()))
-		return ret;
+	if ((ret = this->request_line()) || (ret = this->request_headers())
+		|| (ret = this->request_body()))
+		{
+			this->_status = ret;
+			return ret;
+		}
 	std::cout << BYEL <<"+++++++++++++++++++++++++++++Request+++++++++++++++++++++++++++++++" << BWHT <<std::endl;
 	printRequestInformation();
 	std::cout << BYEL << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"<< BWHT << std::endl;
 
 	return 0;
+}
+
+int		Request::request_body()
+{
+	if (this->request.find("\n") == std::string::npos)
+		this->body = this->request;
+	else
+	{
+		while (this->request.length())
+		{
+			std::string tmp = this->request.substr(0, this->request.find("\n"));
+			if (tmp.back() == '\r')
+				tmp.pop_back();
+			this->body.append(tmp);
+			this->request.erase(0, this->request.find("\n") + 1);	
+		}
+	}
+	return EXIT_SUCCESS;
 }
 
 int		Request::request_line()
@@ -71,6 +93,11 @@ int		Request::request_line()
 		if (tmp.length() < REQUEST_URI_MAX_LENGTH)
 		{
 			this->target = tmp;
+			if (this->target.find("?") != std::string::npos)
+			{
+				this->url = this->target.substr(0, this->target.find("?") + 1);
+				this->queryUrl = this->target.substr(this->target.find('?'));
+			}
 			request.erase(0, this->target.length() + 1);
 		}
 		else
@@ -166,6 +193,10 @@ std::map<std::string, std::string> &Request::getHeaders()
 	return this->headers;
 }
 
+std::string		Request::getQueryString()
+{
+	return (this->queryUrl);
+}
 
 int		&Request::getPort()
 {

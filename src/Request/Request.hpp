@@ -13,6 +13,10 @@ private:
 	std::string methode;
 	std::string target;
 	std::string protocol;
+	std::string queryUrl;
+	std::string body;
+	std::string url;
+	int		_status;
 	int			port;
 	std::map<std::string, std::string> headers;
 
@@ -27,6 +31,8 @@ public:
 	std::string &getTarget();
 	std::string &getProtocol();
 	int			&getPort();
+	std::string		getQueryString();
+	int		request_body();
 	std::map<std::string, std::string> &getHeaders();
 	std::string	autoindex_run(std::string rooted_path);
 

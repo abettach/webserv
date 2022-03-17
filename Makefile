@@ -1,6 +1,6 @@
 NAME = webserv
 FLAGS = #-Wall -Wextra -Werror -std=c++98
-CC = clang++
+CC = c++
 RM = rm -rf
 
 SRCS = main.cpp \
