@@ -39,6 +39,7 @@ int     main(int ac, char **av)
             // std::string root = "/Users/abettach/Desktop/webserv";
             // std::cout << newServers[0].locat["php"].getLocationPath() << std::endl;
             // printServersINFO(newServers);
+            std::cout << "return Path:" << newServers[0].locat["/Return"].getLocationReturnPath() << std::endl;
             Server server(newServers);
             // std::cout << _cgi.runCGI(request, root, cgi_path) << std::endl;
         }

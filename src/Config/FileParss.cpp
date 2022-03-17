@@ -185,11 +185,13 @@ void    FileParss::locationReturn(std::string &tmp, location &sv_loc)
         throw std::runtime_error("Error: Check You Location return!");
     else
     {
-        for (size_t i = 0; i < tmp.size(); i++)
-            if (tmp[i] < '0' || tmp[i] > '9')
-                throw std::runtime_error("Error: Check You Location return!");
+        std::cout << "tmp =" << std::endl;
         _return = std::stoi(tmp);
         sv_loc.setLocationReturnCode(_return);
+
+        tmp.erase(0, std::to_string(_return).size());
+        ft_strtrim(tmp);
+        sv_loc.setLocationReturnPath(tmp);
     }
 }
 

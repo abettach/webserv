@@ -48,6 +48,8 @@ class serverINFO
         void    addLocation(std::map<std::string, location> &sv_loc);
         void    clearLocation(location &sv_loc);
         void    printServerALLData();
+
+
         std::map<std::string, location>     getLocations();
         
 };

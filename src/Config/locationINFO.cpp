@@ -87,6 +87,15 @@ size_t  &location::getLocationReturnCode()
     return this->ReturnCode;
 }
 
+void    location::setLocationReturnPath(std::string &path)
+{
+    this->returnPath = path;
+}
+std::string     location::getLocationReturnPath()
+{
+    return this->returnPath;
+}
+
 std::string     location::getLocationExtention()
 {
     std::string path = this->getLocationPath();
