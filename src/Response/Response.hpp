@@ -4,40 +4,49 @@
 #include "../Request/Request.hpp"
 #include "../Config/FileParss.hpp"
 #include "../Cgi/cgi.hpp"
+#include "../Request/StatusCode.hpp"
+# include <unistd.h>
+#define RINDEX "/index.html"
 class location;
 class serverINFO;
 class Request;
-
 class Response
 {
 private:
-    // Request _request;
+    Request _request;
+    std::vector<serverINFO> _servers;
     bool isCGI;
     bool isLocation;
     CGI _cgi;
     std::string _body;
     std::string _statusLine;
-    std::map<std::string, std::string> _headers;
+    std::string _headers;
     std::string _httpVersion;
     int         _statusCode;
     std::string _reasonPhrase;
     location _location;
     std::string _resp;
     serverINFO _server;
+    std::string _redirectionLocation;
+    std::map<int , std::string> _errors;
 
 public:
     Response(/* args */);
     std::string     &getStatusLine();
     void    creatResponse(std::vector<serverINFO> &, Request &);
-    void    creatBody(std::vector<serverINFO> &, Request &);
+    void    creatBody();
     void    runGetMethode(Request _request);
-    void    getMethode(std::string _uri, Request _request);
+    void    getMethode(std::string _uri);
     void get_body(std::string file_name);
     int    CheckForPerfectMatch(std::string, std::vector<location> _loactions);
     int     CheckForMatchOne(std::string _path, std::vector<location> _locations);
-    std::string autoindex_run(std::string rooted_path, Request _request);
+    void autoindex_run(std::string rooted_path);
     std::string     GetBody();
     bool isDirectory(const std::string &s, int is_full);
+    void    setErrorPage(int _Error_code);
+    std::string getDefaultErrorPage(int status);
+    std::string getStatusCodeTranslate();
+    std::string getRespContentType();
     ~Response();
 };
 

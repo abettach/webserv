@@ -27,9 +27,9 @@ void	Request::printRequestInformation()
 	for (std::map<std::string, std::string>::iterator it = this->headers.begin(); it != this->headers.end(); it++)
 		std::cout << "\e[1;32m" << it->first << ":\e[1;36m " << it->second <<"\e[1;37m" << std::endl;
 }
-Request::Request(){}
+Request::Request() : _status(200) {}
 
-Request::~Request() : _status(200)
+Request::~Request()
 {
 }
 int		Request::Request_start(std::string _Request)
@@ -196,6 +196,11 @@ std::map<std::string, std::string> &Request::getHeaders()
 std::string		Request::getQueryString()
 {
 	return (this->queryUrl);
+}
+
+std::string		Request::getReqValue(std::string _key)
+{
+	return (this->headers[_key]);
 }
 
 int		&Request::getPort()
