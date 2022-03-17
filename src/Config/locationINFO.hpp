@@ -14,7 +14,7 @@ class location
         std::string UploadStore;
         size_t  ReturnCode;
         std::string fastcgi_pass;
-        std::map<std::string, bool> allowed_methode;
+        std::map<std::string, bool> allowed_Method;
     public:
         // ~location();
         void		setLocationExtention(std::string _type);
@@ -36,7 +36,7 @@ class location
         std::string     getLocationExtention();
 
         void    	clearAll();
-        void setLocationAllowedMethods(std::map<std::string, bool> _allowed_methode);
+        void setLocationAllowedMethods(std::map<std::string, bool> _allowed_Method);
         std::map<std::string, bool> getLocationAllowedMethods();
 };
 

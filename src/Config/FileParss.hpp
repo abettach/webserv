@@ -81,7 +81,7 @@ class FileParss
         std::vector<serverINFO>    SplitServers();
         void    init_pointer(bool);
         void   ft_clean(std::vector<std::string> str);
-        bool    isValideMethode(std::string tmp);
+        bool    isValideMethod(std::string tmp);
 };
 
 template <typename T>

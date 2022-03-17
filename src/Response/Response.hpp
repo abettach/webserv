@@ -35,8 +35,8 @@ public:
     std::string     &getStatusLine();
     void    creatResponse(std::vector<serverINFO> &, Request &);
     void    creatBody();
-    void    runGetMethode(Request _request);
-    void    getMethode(std::string _uri);
+    void    runGetMethod(Request _request);
+    void    getMethod(std::string _uri);
     void get_body(std::string file_name);
     int    CheckForPerfectMatch(std::string, std::vector<location> _loactions);
     int     CheckForMatchOne(std::string _path, std::vector<location> _locations);
@@ -47,6 +47,10 @@ public:
     std::string getDefaultErrorPage(int status);
     std::string getStatusCodeTranslate();
     std::string getRespContentType();
+    std::string     getRespHeader();
+    void    clear();
+    bool    isDirectory(std::string path);
+    void    deleteMethod(std::string _Path);
     ~Response();
 };
 

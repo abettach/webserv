@@ -16,7 +16,7 @@ std::string    CGI::runCGI(Request _request, std::string root,  std::string cgi_
     setenv("GATEWAY_INTERFACE", "CGI/1.1", 1);
     setenv("SERVER_PROTOCOL", "HTTP/1.1", 1);
     setenv("SERVER_PORT", std::to_string(_request.getPort()).c_str(), 1);
-    setenv("REQUEST_METHOD", _request.getMethode().c_str(), 1);
+    setenv("REQUEST_METHOD", _request.getMethod().c_str(), 1);
     setenv("SERVER_NAME", "webserv", 1);
     setenv("REDIRECT_STATUS", "1", 1);
     setenv("PATH_INFO", "/Users/abettach/Desktop/webserv", 1);

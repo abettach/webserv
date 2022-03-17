@@ -439,14 +439,10 @@ void Server::responseHandling(int &accptSockFD)
 	// if (_request.getTarget().compare(0, _request.getTarget().size(), ""))
 	// 	std::cout << _request.getPort() << std::endl;
 	char *header = strdup("HTTP/1.1 200 OK\r\nContent-Length: ");
-	// std::string cgi_path = "/Users/abettach/goinfre/.brew/bin/php-cgi";
-    // std::string root = "/Users/abettach/Desktop/webserv";
-    // CGI _cgi;
-    // std::cout << _cgi.runCGI(_request, root, cgi_path) << std::endl;
-	// body = _cgi.runCGI(_request, root, cgi_path).substr(64,_cgi.runCGI(_request, root, cgi_path).size());
-	// std::cout << body << std::endl;
+
 	Response _resp;
 	_resp.creatResponse(this->_servers, this->_request);
+	this->_request.clear();
 	// if (path.size() == 0 || path == "/")
 	// 	body = get_body("index.html");
 	// else
@@ -455,7 +451,7 @@ void Server::responseHandling(int &accptSockFD)
 
 	if (FD_ISSET(accptSockFD, &_writeFDs))
 	{
-		if (send(accptSockFD, all.c_str(), all.length(), 0) != (ssize_t)all.length())
+		if (send(accptSockFD, _resp.getRespHeader().c_str(), _resp.getRespHeader().length(), 0) != (ssize_t)_resp.getRespHeader().length())
 			throw std::runtime_error("Unable to send the response to client in socket " + std::to_string(accptSockFD));
 		if (0) // if connection is set to close in request close
 		{

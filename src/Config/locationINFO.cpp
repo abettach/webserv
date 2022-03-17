@@ -51,13 +51,13 @@ std::string location::getLocationFastCgiPass()
 }
 
 
-void location::setLocationAllowedMethods(std::map<std::string, bool> _allowed_methode)
+void location::setLocationAllowedMethods(std::map<std::string, bool> _allowed_Method)
 {
-    this->allowed_methode = _allowed_methode;
+    this->allowed_Method = _allowed_Method;
 }
 std::map<std::string, bool> location::getLocationAllowedMethods()
 {
-    return this->allowed_methode;
+    return this->allowed_Method;
 }
 
 void location::setLocationUploadEnable(bool _UploadEnable)
@@ -104,5 +104,5 @@ void    location::clearAll()
     this->index.clear();
     this->fastcgi_pass.erase(0, strlen(this->fastcgi_pass.c_str()));
     this->fastcgi_pass.clear();
-    this->allowed_methode.clear();
+    this->allowed_Method.clear();
 }

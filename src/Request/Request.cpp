@@ -21,16 +21,32 @@ Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7\r\n";
 
 void	Request::printRequestInformation()
 {
-	std::cout << "\e[1;32mMthode:\e[1;36m " << this->methode << std::endl;
+	std::cout << "\e[1;32mMthode:\e[1;36m " << this->Method << std::endl;
 	std::cout << "\e[1;32mTarget:\e[1;36m " << this->target<<"\e[1;37m" << std::endl;
 	std::cout << "\e[1;32mProtocol: \e[1;36m" << this->protocol <<"\e[1;37m"<< std::endl; 
 	for (std::map<std::string, std::string>::iterator it = this->headers.begin(); it != this->headers.end(); it++)
 		std::cout << "\e[1;32m" << it->first << ":\e[1;36m " << it->second <<"\e[1;37m" << std::endl;
+	std::cout << "\e[1;32mQuery: \e[1;36m" << this->queryUrl << "\e[1;37m" << std::endl;
+	std::cout << "\e[1;32mUrl: \e[1;36m" << this->url << "\e[1;37m" << std::endl;
+	std::cout << this->body << std::endl;
 }
-Request::Request() : _status(200) {}
+Request::Request() : _status(200), target(""), url(""), queryUrl("")
+{
+	this->headers.clear();
+}
+
+void	Request::clear()
+{
+	this->target.clear();
+	this->url.clear();
+	this->headers.clear();
+	this->queryUrl.clear();
+}
 
 Request::~Request()
 {
+	this->target.clear();
+	this->url.clear();
 }
 int		Request::Request_start(std::string _Request)
 {
@@ -69,7 +85,7 @@ int		Request::request_body()
 
 int		Request::request_line()
 {
-	std::string methode;
+	std::string Method;
  	bool _m = false;
 
 	if (request.find("\r\n") != std::string::npos)
@@ -78,14 +94,13 @@ int		Request::request_line()
 
 		if (tmp == "GET" || tmp == "POST" || tmp == "DELETE")
 		{
-			this->methode = tmp;
-			request.erase(0, this->methode.length() + 1);
+			this->Method = tmp;
+			request.erase(0, this->Method.length() + 1);
 		}
 		else
 			return NOT_IMPLEMENTED;
 		if (request.find(' ') == 0)
 			return BAD_REQUEST;
-		
 		tmp = request.substr(0, request.find(' '));
 		if (tmp[0] != '/')
 			return BAD_REQUEST;
@@ -95,10 +110,12 @@ int		Request::request_line()
 			this->target = tmp;
 			if (this->target.find("?") != std::string::npos)
 			{
-				this->url = this->target.substr(0, this->target.find("?") + 1);
-				this->queryUrl = this->target.substr(this->target.find('?'));
+				this->url = this->target.substr(0, this->target.find("?"));
+				this->queryUrl = this->target.substr(this->target.find('?') + 1);
 			}
 			request.erase(0, this->target.length() + 1);
+			if (!this->url.empty())
+				this->target = this->url;
 		}
 		else
 			return REQUEST_URI_TOO_LONG;
@@ -171,9 +188,9 @@ int		Request::request_headers()
 	 return EXIT_SUCCESS;
 }
 
-std::string &Request::getMethode()
+std::string &Request::getMethod()
 {
-	return this->methode;
+	return this->Method;
 }
 
 std::string &Request::getTarget()
@@ -201,6 +218,11 @@ std::string		Request::getQueryString()
 std::string		Request::getReqValue(std::string _key)
 {
 	return (this->headers[_key]);
+}
+
+std::string		Request::getUrl()
+{
+	return this->url;
 }
 
 int		&Request::getPort()

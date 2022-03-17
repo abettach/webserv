@@ -205,30 +205,30 @@ void    FileParss::locationFastCgiPassRun(std::string &tmp, location &sv_loc)
     sv_loc.setLocationFastCgiPass(tmp);
 }
 
-bool    FileParss::isValideMethode(std::string tmp)
+bool    FileParss::isValideMethod(std::string tmp)
 {
     tmp.pop_back();
-    std::vector<std::string> methodes = ft_split(tmp, ',');
-    for (size_t i = 0; i < methodes.size(); i++)
-        if (methodes[i].compare("GET") && methodes[i].compare("POST") && methodes[i].compare("DELETE"))
-            throw std::runtime_error("Error: Methode Not Allowed [" + methodes[i] + "]");
+    std::vector<std::string> Methods = ft_split(tmp, ',');
+    for (size_t i = 0; i < Methods.size(); i++)
+        if (Methods[i].compare("GET") && Methods[i].compare("POST") && Methods[i].compare("DELETE"))
+            throw std::runtime_error("Error: Method Not Allowed [" + Methods[i] + "]");
     return true;
 }
 
 void    FileParss::locationAllowMethodsRun(std::string &tmp, location &sv_loc)
 {
-    std::map<std::string , bool> methodes;
+    std::map<std::string , bool> Methods;
     tmp.erase(0, strlen(ALLOW_METHODS));
     ft_strtrim(tmp);
-    if (tmp[0] != '[' || !isValideMethode(&tmp[1]))
-        throw std::runtime_error("Error: Check You Location Allow_methode!");
+    if (tmp[0] != '[' || !isValideMethod(&tmp[1]))
+        throw std::runtime_error("Error: Check You Location Allow_Method!");
     if (tmp.find("GET") != std::string::npos)
-        methodes.insert(std::pair<std::string, bool>("GET", true));
+        Methods.insert(std::pair<std::string, bool>("GET", true));
     if (tmp.find("POST") != std::string::npos)
-        methodes.insert(std::pair<std::string, bool>("POST", true));
+        Methods.insert(std::pair<std::string, bool>("POST", true));
     if (tmp.find("DELETE") != std::string::npos)
-        methodes.insert(std::pair<std::string, bool>("DELETE", true));
-    sv_loc.setLocationAllowedMethods(methodes);
+        Methods.insert(std::pair<std::string, bool>("DELETE", true));
+    sv_loc.setLocationAllowedMethods(Methods);
 }
 
 void    FileParss::init_pointer(bool location)

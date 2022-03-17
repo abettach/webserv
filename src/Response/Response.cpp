@@ -5,6 +5,11 @@ Response::Response(/* args */) : _statusCode(200) , _headers("")
     // this->_status = this->_request.getStatusCode();
 }
 
+std::string     Response::getRespHeader()
+{
+    return this->_headers;
+}
+
 void Response::autoindex_run(std::string rooted_path)
 {
 	DIR *directory = opendir(rooted_path.c_str());
@@ -87,7 +92,7 @@ std::string     Response::GetBody()
 
 void    Response::get_body(std::string file_name)
 {
-	std::ifstream file(file_name);
+    std::ifstream file(file_name);
     if (access(file_name.c_str(), F_OK) != 0) // Check if The file existe
         setErrorPage(NOT_FOUND);
     else
@@ -157,7 +162,7 @@ void    Response::setErrorPage(int _Error_code)
         this->_body = getDefaultErrorPage(this->_statusCode);
 }
 
-void    Response::getMethode(std::string _uri)
+void    Response::getMethod(std::string _uri)
 {
     // std::cout << "uri = " << _uri << std::endl;
     // if (this->isLocation)
@@ -185,7 +190,7 @@ void    Response::getMethode(std::string _uri)
             std::string filePath = _uri + "/" + this->_location.getLocationIndex();
             std::ifstream file(filePath.c_str());
             if (file.is_open())
-                get_body(this->_server.getRootDir() + "/" + this->_location.getLocationIndex());
+                get_body(_uri + "/" + this->_location.getLocationIndex());
             else
                 autoindex_run(this->_server.getRootDir() + this->_request.getTarget()); 
             file.close();
@@ -235,6 +240,41 @@ int     Response::CheckForMatchOne(std::string _path, std::vector<location> _loc
     }
     return 0;
 }
+
+bool Response::isDirectory(std::string path)
+{
+    DIR *dir;
+
+    if ((dir = opendir(path.c_str())))
+    {
+        closedir(dir);
+        return true;
+    }
+    return false;
+}
+
+void    Response::deleteMethod(std::string _Path)
+{
+    std::cout << "Path =" << _Path << std::endl;
+    if (isDirectory(_Path))
+        setErrorPage(NOT_FOUND);
+    else
+    {
+        if (access(_Path.c_str(), F_OK))
+            setErrorPage(NOT_FOUND);
+        else
+        {
+            if (!access(_Path.c_str(), W_OK))
+            {
+                if (std::remove(_Path.c_str()))
+                    setErrorPage(INTERNAL_SERVER_ERROR);
+            }
+            else
+                setErrorPage(FORBIDEN);
+        }
+    }
+}
+
 void    Response::creatBody()
 {
     //*****************Find the right location and server information****************
@@ -258,21 +298,24 @@ void    Response::creatBody()
     if (this->CheckForPerfectMatch(RequestPath, myLocations) || this->CheckForMatchOne(RequestPath, myLocations))
         isLocation = true;
     std::map<std::string, bool> allowedMethods = this->_location.getLocationAllowedMethods();
-    if (!allowedMethods[this->_request.getMethode()])
+    if (!allowedMethods[this->_request.getMethod()])
     {
-        if (this->_request.getMethode() != "GET" && this->_request.getMethode() != "POST" && this->_request.getMethode() != "DELETE")
+        if (this->_request.getMethod() != "GET" && this->_request.getMethod() != "POST" && this->_request.getMethod() != "DELETE")
 			setErrorPage(NOT_IMPLEMENTED);
 		else
 			setErrorPage(METHOD_NOT_ALLOWED);
-        throw std::runtime_error("Error: Methode Not allowed");
+        // throw std::runtime_error("Error: Method Not allowed");
     }
-    // std::cout << "methode = " << this->_request.getMethode() << std::endl;
-    if (!this->_request.getMethode().compare("GET"))
-        getMethode(this->_server.getRootDir() + this->_request.getTarget());
-    // else if (!_request.getMethode().compare("POST"))
-    //     PostMethode(_request.getTarget());
-    // else if (!_request.getTarget().compare("DELETE"))
-    //     DeleteMethode();
+    // std::cout << "Method = " << this->_request.getMethod() << std::endl;
+    if (!this->_request.getMethod().compare("GET") && allowedMethods[this->_request.getMethod()])
+        getMethod(this->_server.getRootDir() + this->_request.getTarget());
+    // else if (!_request.getMethod().compare("POST"))
+    //     PostMethod(_request.getTarget());
+    else if (!_request.getMethod().compare("DELETE"))
+    {
+        std::cout << "im heeere" << std::endl;
+        deleteMethod(this->_server.getRootDir() + this->_request.getTarget());
+    } 
 }
 
 std::string Response::getRespContentType()
@@ -290,7 +333,7 @@ std::string Response::getRespContentType()
 	else if (_request.getTarget().find(".") != std::string::npos && !this->_request.getTarget().substr(_request.getTarget().find(".")).compare(".js"))
 		return "aplication/javascript";
 	else
-		return "text/plain";
+		return "text/html; charset=UTF-8";
 }
 
 void    Response::creatResponse(std::vector<serverINFO> &servers, Request &request)
@@ -309,7 +352,6 @@ void    Response::creatResponse(std::vector<serverINFO> &servers, Request &reque
     this->_headers.append(std::to_string(this->_statusCode));
     this->_headers.append(" ");
     this->_headers.append(getStatusCodeTranslate());
-    this->_headers.append("\r\n");
     if (this->_statusCode == MOVED_PERMANENTLY)
     {
         this->_headers.append("Location: " + this->_redirectionLocation);
@@ -332,7 +374,7 @@ void    Response::creatResponse(std::vector<serverINFO> &servers, Request &reque
         else
         {
             this->_headers.append("\r\n");
-            this->_headers.append("Content-Length: ") + std::to_string(this->_body.length());
+            this->_headers.append("Content-Length: " + std::to_string(this->_body.length()));
         }
         if (this->_request.getReqValue("cookie").size())
         {
@@ -345,6 +387,13 @@ void    Response::creatResponse(std::vector<serverINFO> &servers, Request &reque
     std::cout << BYEL << "******************************** Response ********************************" << std::endl;
     std::cout << BRED << this->_headers << std::endl;
     std::cout << BYEL <<"********************************* Response ********************************" << BWHT <<std::endl;
+}
+
+void    Response::clear()
+{
+    this->_body.clear();
+    this->_headers.clear();
+    this->_statusCode = 200;    
 }
 
 Response::~Response()

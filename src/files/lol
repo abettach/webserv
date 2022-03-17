@@ -1,0 +1,39 @@
+HTTP/1.1 200 OK
+Server: webserv
+Date: Thu Mar 17 18:30:58 2022GMT
+Connection: keep-alive
+Content-Type: text/plain
+Content-Length: 288
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>This is Lol file</h1>
+</body>
+</html>
+
+HTTP/1.1 200 OK
+Server: webserv
+Date: Thu Mar 17 18:29:57 2022GMT
+Connection: keep-alive
+Content-Type: text/plain
+Content-Length: 288
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>This is Lol file</h1>
+</body>
+</html>

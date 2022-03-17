@@ -10,7 +10,7 @@ class Request
 {
 private:
 	std::string request;
-	std::string methode;
+	std::string Method;
 	std::string target;
 	std::string protocol;
 	std::string queryUrl;
@@ -27,7 +27,7 @@ public:
 	int		request_line();
 	int		request_headers();
 	void	printRequestInformation();
-	std::string &getMethode();
+	std::string &getMethod();
 	std::string &getTarget();
 	std::string &getProtocol();
 	int			&getPort();
@@ -36,6 +36,8 @@ public:
 	std::map<std::string, std::string> &getHeaders();
 	std::string	autoindex_run(std::string rooted_path);
 	std::string		getReqValue(std::string _key);
+	std::string		getUrl();
+	void	clear();
 
 };
 
