@@ -6,6 +6,11 @@
 #include "../Cgi/cgi.hpp"
 #include "../Request/StatusCode.hpp"
 # include <unistd.h>
+#include <fstream>
+#include <sstream>
+#include <sys/stat.h>
+#include <dirent.h>
+
 #define RINDEX "/index.html"
 class location;
 class serverINFO;
@@ -51,6 +56,7 @@ public:
     void    clear();
     bool    isDirectory(std::string path);
     void    deleteMethod(std::string _Path);
+    void    parseCgiResp(std::string &);
     ~Response();
 };
 

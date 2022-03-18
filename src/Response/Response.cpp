@@ -155,6 +155,7 @@ std::string Response::getDefaultErrorPage(int status)
 
 void    Response::setErrorPage(int _Error_code)
 {
+    std::cout << "im in setError page" << std::endl;
     this->_statusCode = _Error_code;
     if (!this->_server.getErrorPage()[this->_statusCode].empty())
         get_body(this->_server.getErrorPage()[this->_statusCode]);
@@ -162,23 +163,88 @@ void    Response::setErrorPage(int _Error_code)
         this->_body = getDefaultErrorPage(this->_statusCode);
 }
 
+void    Response::parseCgiResp(std::string &cgiResp)
+{
+	std::string buffer;
+	std::istringstream s(cgiResp);
+	time_t rawTime;
+	std::string tm;
+
+	time(&rawTime);
+	tm = ctime(&rawTime);
+	tm.pop_back();
+    this->_headers.append("HTTP/1.1");
+    this->_headers.append(" ");
+	this->_headers.append(std::to_string(this->_statusCode));
+	this->_headers.append(" ");
+	this->_headers.append(this->getStatusCodeTranslate());
+	// this->_headers.append("\r\n");
+	this->_headers.append("Server: Webserv\r\n");
+	this->_headers.append("Date: " + tm.append(" GMT"));
+	this->_headers.append("\r\n");
+	this->_headers.append("Connection: " + _request.getReqValue("Connection"));
+	this->_headers.append("\r\n");
+	if (this->_location.getLocationPath().find(".php") != std::string::npos)
+	{
+		while (std::getline(s, buffer))
+		{
+			if (buffer.find("X-Powered-By:") != std::string::npos)
+			{
+				this->_headers.append("X-Powered-By: " + buffer.substr(buffer.find(": ") + 2));
+			}
+			else if (buffer.find("Set-Cookie:") != std::string::npos)
+			{
+				this->_headers.append("Set-Cookie: " + buffer.substr(buffer.find(": ") + 2));
+			}
+			else if (buffer.find("Expires:") != std::string::npos)
+			{
+				this->_headers.append("Expires: " + buffer.substr(buffer.find(": ") + 2));
+			}
+			else if (buffer.find("Cache-Control:") != std::string::npos)
+			{
+				this->_headers.append("Cache-Control: " + buffer.substr(buffer.find(": ") + 2));
+			}
+			else if (buffer.find("Pragma:") != std::string::npos)
+			{
+				this->_headers.append("Pragma: " + buffer.substr(buffer.find(": ") + 2));
+			}
+			else if (buffer.find("Content-type:") != std::string::npos)
+			{
+				this->_headers.append("Content-type: " + buffer.substr(buffer.find(": ") + 2));
+			}
+			else if (buffer.compare("\r\n\r\n") == 0)
+				break;
+		}
+	}
+	else if (this->_location.getLocationPath().find(".py") != std::string::npos)
+	{
+		while (std::getline(s, buffer))
+		{
+			if (buffer.find("Content-type:") != std::string::npos)
+			{
+				this->_headers.append("Content-type: " + buffer.substr(buffer.find(":") + 1));
+				this->_headers.pop_back();
+			}
+		}
+		this->_body = cgiResp.substr(cgiResp.find("\r\n") + 2);
+	}
+	this->_body = cgiResp.substr(cgiResp.find("\r\n\r\n") + 4);
+	this->_headers.append("\r\n");
+	this->_headers.append("Content-Length: " + std::to_string(_body.size()));
+	this->_headers.append("\r\n\r\n");
+	this->_headers.append(_body);
+}
+
 void    Response::getMethod(std::string _uri)
 {
-    // std::cout << "uri = " << _uri << std::endl;
-    // if (this->isLocation)
-    //     std::cout << "My Location:" << this->_location.getLocationPath() << std::endl;
-    // else
-    //     std::cout << "My Location:" << "No Location Found!!" << std::endl;
-    // std::cout << "autoindex : " << this->_location.getLocationAutoIndex() << std::endl;
-    // std::cout << "index :" << this->_location.getLocationIndex() << std::endl;
-    // std::cout << "CGI status :" << isCGI << std::endl;
-    // std::cout << "Location status:" << isLocation << std::endl;
+    std::cout << "im in get Method" << std::endl;
     std::map<std::string, bool> allowedMethods = this->_location.getLocationAllowedMethods();
     if (this->isLocation)
     {
         if (this->isCGI)
         {
-            this->_body = _cgi.runCGI(this->_request, this->_server.getRootDir(), this->_location.getLocationFastCgiPass()).substr(67,_cgi.runCGI(this->_request, this->_server.getRootDir(), this->_location.getLocationFastCgiPass()).size());
+            this->_body = _cgi.runCGI(this->_request, this->_server.getRootDir(), this->_location.getLocationFastCgiPass());
+            parseCgiResp(this->_body);
             std::cout << "*********************************CGI Body*******************************" << std::endl;
             std::cout << this->_body << std::endl;
             std::cout << "************************************************************************" << std::endl;
@@ -204,12 +270,18 @@ void    Response::getMethod(std::string _uri)
 
 int    Response::CheckForPerfectMatch(std::string _path, std::vector<location> _locations)
 {
-    this->_location = _locations[0];
+    for (size_t i = 0; i < _locations.size(); i++)
+    {
+        if (_locations[i].getLocationPath().compare("/") == 0)
+        {
+            this->_location = _locations[i];
+            break;
+        }
+    }
     if (_path.find(".py") != std::string::npos || _path.find(".php") != std::string::npos)
         isCGI = true;
     for (std::vector<location>::iterator it = _locations.begin(); it != _locations.end(); it++)
     {
-        // std::cout << "path =|" << _path << "|, location path=|" << it->getLocationPath() << "|" << std::endl;
         if (_path == it->getLocationPath())
         {
             this->_location = *it;
@@ -226,16 +298,26 @@ int    Response::CheckForPerfectMatch(std::string _path, std::vector<location> _
 
 int     Response::CheckForMatchOne(std::string _path, std::vector<location> _locations)
 {
-    this->_location = _locations[0];
+    for (size_t i = 0; i < _locations.size(); i++)
+    {
+        if (_locations[i].getLocationPath().compare("/") == 0)
+        {
+            this->_location = _locations[i];
+            break;
+        }
+    }
     if (_path.find(".py") != std::string::npos || _path.find(".php") != std::string::npos)
         isCGI = true;
-    _path.erase(0, _path.find(".") + 1);
-    for (std::vector<location>::iterator it = _locations.begin(); it != _locations.end(); it++)
+    if (_path.find(".") != std::string::npos)
     {
-        if (_path == it->getLocationPath().erase(0, it->getLocationPath().find(".") + 1))
+        _path.erase(0, _path.find(".") + 1);
+        for (std::vector<location>::iterator it = _locations.begin(); it != _locations.end(); it++)
         {
-            this->_location = *it;
-            return 1;
+            if (_path == it->getLocationPath().erase(0, it->getLocationPath().find(".") + 1))
+            {
+                this->_location = *it;
+                return 1;
+            }
         }
     }
     return 0;
@@ -255,7 +337,6 @@ bool Response::isDirectory(std::string path)
 
 void    Response::deleteMethod(std::string _Path)
 {
-    std::cout << "Path =" << _Path << std::endl;
     if (isDirectory(_Path))
         setErrorPage(NOT_FOUND);
     else
@@ -281,11 +362,11 @@ void    Response::creatBody()
     std::string RequestPath = this->_request.getTarget();
     this->isLocation = false;
     this->isCGI = false;
+
     if (RequestPath.empty())
         RequestPath.append("/");
-    // std::cout << "RequestPath :" << RequestPath << std::endl; 
     for (size_t i = 0; i < this->_servers.size(); i++)
-        if (this->_servers[i].getPort() == this->_request.getPort())
+        if (this->_servers[i].getPort() == this->_request.getPort() || (this->_servers[i].getPort() == 80 && !this->_request.getPort()))
         {
             this->_server = this->_servers[i];
             break;
@@ -294,7 +375,6 @@ void    Response::creatBody()
     std::vector<location> myLocations;
     for (std::map<std::string, location>::iterator it = locations.begin(); it != locations.end() ; it++)
         myLocations.push_back(it->second);
-    // std::cout << "server path = " << RequestPath << std::endl;
     if (this->CheckForPerfectMatch(RequestPath, myLocations) || this->CheckForMatchOne(RequestPath, myLocations))
         isLocation = true;
     std::map<std::string, bool> allowedMethods = this->_location.getLocationAllowedMethods();
@@ -312,10 +392,7 @@ void    Response::creatBody()
     // else if (!_request.getMethod().compare("POST"))
     //     PostMethod(_request.getTarget());
     else if (!_request.getMethod().compare("DELETE"))
-    {
-        std::cout << "im heeere" << std::endl;
         deleteMethod(this->_server.getRootDir() + this->_request.getTarget());
-    } 
 }
 
 std::string Response::getRespContentType()
@@ -346,7 +423,10 @@ void    Response::creatResponse(std::vector<serverINFO> &servers, Request &reque
     tm.pop_back();
     this->_request = request;
     this->_servers = servers;
+
     this->creatBody();
+    if (!this->isCGI)
+    {
     this->_headers.append("HTTP/1.1");
     this->_headers.append(" ");
     this->_headers.append(std::to_string(this->_statusCode));
@@ -383,6 +463,7 @@ void    Response::creatResponse(std::vector<serverINFO> &servers, Request &reque
         }
         this->_headers.append("\r\n\r\n");
         this->_headers.append(this->_body);
+    }
     }
     std::cout << BYEL << "******************************** Response ********************************" << std::endl;
     std::cout << BRED << this->_headers << std::endl;

@@ -231,7 +231,13 @@ int		&Request::getPort()
 	for (std::map<std::string, std::string>::iterator it = this->headers.begin(); it != this->headers.end(); it++)
 		if (it->first == "Host")
 			tmp = it->second;
-	tmp.erase(0, tmp.find(":") + 1);
-	this->port = std::stoi(tmp);
+	if (tmp.find(":") != std::string::npos)
+	{
+		tmp.erase(0, tmp.find(":") + 1);
+		this->port = std::stoi(tmp);
+	}
+	else
+		this->port = 80;
+	
 	return this->port;
 }

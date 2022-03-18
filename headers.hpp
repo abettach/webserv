@@ -36,5 +36,7 @@
 # include <limits.h>
 #include <dirent.h> // opendir
 #include <sys/wait.h>
-
+#include <string>
+#include <iostream>
+#include <sstream>
 #endif

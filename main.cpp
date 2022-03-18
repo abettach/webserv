@@ -28,18 +28,10 @@ int     main(int ac, char **av)
         try
         {
             FileParss parss(ac, av);
-            Request _request;
-            // std::string test = "hello";
-            // _request.Request_start(test);
             Response resp;
             //split all servers by port NB: use 'port' variable not 'ports' to get every server port
             std::vector<serverINFO> newServers = parss.SplitServers();
-
-            // std::string cgi_path = "/Users/abettach/goinfre/.brew/bin/php-cgi";
-            // std::string root = "/Users/abettach/Desktop/webserv";
-            // std::cout << newServers[0].locat["php"].getLocationPath() << std::endl;
             // printServersINFO(newServers);
-            std::cout << "return Path:" << newServers[0].locat["/Return"].getLocationReturnPath() << std::endl;
             Server server(newServers);
             // std::cout << _cgi.runCGI(request, root, cgi_path) << std::endl;
         }
