@@ -57,6 +57,8 @@ public:
     bool    isDirectory(std::string path);
     void    deleteMethod(std::string _Path);
     void    parseCgiResp(std::string &);
+    void    PostMethod();
+    std::string getUploadPath();
     ~Response();
 };
 

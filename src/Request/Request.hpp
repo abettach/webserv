@@ -14,9 +14,13 @@ private:
 	std::string target;
 	std::string protocol;
 	std::string queryUrl;
+	std::string bounday_body;
 	std::string body;
 	std::string url;
 	int		_status;
+	std::string ContentDiposition;
+	std::string name;
+	std::string value;
 	int			port;
 	std::map<std::string, std::string> headers;
 

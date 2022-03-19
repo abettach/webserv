@@ -356,6 +356,57 @@ void    Response::deleteMethod(std::string _Path)
     }
 }
 
+std::string Response::getUploadPath()
+{
+    std::string path;
+    if (!this->_location.getLocationUploadStore().empty())
+    {
+        if (this->_location.getLocationUploadStore()[0] != '/')
+            path = "/" + this->_location.getLocationUploadStore();
+        else
+            path = this->_location.getLocationUploadStore();
+        return (this->_server.getRootDir() + path);
+    }
+    return (this->_server.getRootDir());
+}
+
+void    Response::PostMethod()
+{
+    std::string file_path;
+    std::string buffer;
+
+    if (!this->_location.getLocationUploadEnable())
+        setErrorPage(UNAUTHORIZED);
+    else
+    {
+        file_path = getUploadPath();
+        std::cout << "file_path=" << file_path << std::endl;
+        if (!isDirectory(file_path))
+            setErrorPage(NOT_FOUND);
+        else
+        {
+            std::string fileName = file_path + '/' + this->_request.getReqValue("Content-Disposition");
+            std::cout << "file_name = " << fileName << std::endl;
+            std::ifstream fileCheck(fileName);
+            if (fileCheck.is_open())
+            {
+                fileCheck.close();
+                setErrorPage(FORBIDEN);
+                return;
+            }
+            else
+            {
+                std::cout << "im in create the file" << std::endl;
+                std::ofstream file(fileName);
+                std::stringstream ss(this->_request.getReqValue("value"));
+                while(std::getline(ss, buffer))
+                    file << buffer.append("\n");
+                file.close();
+            }
+        }
+    }
+}
+
 void    Response::creatBody()
 {
     //*****************Find the right location and server information****************
@@ -389,8 +440,8 @@ void    Response::creatBody()
     // std::cout << "Method = " << this->_request.getMethod() << std::endl;
     if (!this->_request.getMethod().compare("GET") && allowedMethods[this->_request.getMethod()])
         getMethod(this->_server.getRootDir() + this->_request.getTarget());
-    // else if (!_request.getMethod().compare("POST"))
-    //     PostMethod(_request.getTarget());
+    else if (!_request.getMethod().compare("POST"))
+        PostMethod();
     else if (!_request.getMethod().compare("DELETE"))
         deleteMethod(this->_server.getRootDir() + this->_request.getTarget());
 }

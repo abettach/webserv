@@ -67,19 +67,46 @@ int		Request::Request_start(std::string _Request)
 
 int		Request::request_body()
 {
-	if (this->request.find("\n") == std::string::npos)
-		this->body = this->request;
+	// std::cout << this->request << std::endl;
+	if (this->request.find("Boundary") != std::string::npos)
+	{
+		if (this->request.find("Content-Disposition") != std::string::npos)
+		{
+			this->request.erase(0, request.find("Content-Disposition") + 21);
+			ContentDiposition = this->request.substr(0,request.find(";"));
+			this->headers["Content-Disposition"] = ContentDiposition;
+			this->request.erase(0,request.find(";") + 1);
+		}
+		if (this->request.find("name") != std::string::npos)
+		{
+			this->name = this->request.erase(0, request.find("=")).substr(2, request.find("\r\n") - 3);
+			this->headers["name"] = this->name;
+			this->request.erase(0, request.find("\r\n") + 4);
+		}
+		if (this->request[0] != '-')
+		{
+			this->value = this->request.substr(0, request.find("-"));
+			this->headers["value"] = this->value;
+		}
+
+	}
 	else
 	{
-		while (this->request.length())
+		if (this->request.find("\n") == std::string::npos)
+			this->body = this->request;
+		else
 		{
-			std::string tmp = this->request.substr(0, this->request.find("\n"));
-			if (tmp.back() == '\r')
-				tmp.pop_back();
-			this->body.append(tmp);
-			this->request.erase(0, this->request.find("\n") + 1);	
+			while (this->request.length())
+			{	
+				std::string tmp = this->request.substr(0, this->request.find("\n"));
+				if (tmp.back() == '\r')
+					tmp.pop_back();
+				this->body.append(tmp);
+				this->request.erase(0, this->request.find("\n") + 1);	
+			}
 		}
 	}
+	std::cout << body  << std::endl;
 	return EXIT_SUCCESS;
 }
 
