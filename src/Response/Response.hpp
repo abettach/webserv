@@ -59,6 +59,7 @@ public:
     void    parseCgiResp(std::string &);
     void    PostMethod();
     std::string getUploadPath();
+    location getRedirection(std::string locName);
     ~Response();
 };
 

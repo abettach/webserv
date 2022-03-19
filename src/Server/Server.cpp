@@ -453,7 +453,7 @@ void Server::responseHandling(int &accptSockFD)
 	{
 		if (send(accptSockFD, _resp.getRespHeader().c_str(), _resp.getRespHeader().length(), 0) != (ssize_t)_resp.getRespHeader().length())
 			throw std::runtime_error("Unable to send the response to client in socket " + std::to_string(accptSockFD));
-		if (0) // if connection is set to close in request close
+		if (1) // if connection is set to close in request close
 		{
 			std::cout << "Disconnected socket: " << std::to_string(accptSockFD) << std::endl;
 			close(accptSockFD);

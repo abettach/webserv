@@ -220,6 +220,10 @@ std::string &Request::getMethod()
 	return this->Method;
 }
 
+void	Request::setTarget(std::string _target)
+{
+	this->target = _target;
+}
 std::string &Request::getTarget()
 {
 	if (this->target[0] != '/')

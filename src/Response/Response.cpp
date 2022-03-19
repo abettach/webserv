@@ -282,16 +282,24 @@ int    Response::CheckForPerfectMatch(std::string _path, std::vector<location> _
         isCGI = true;
     for (std::vector<location>::iterator it = _locations.begin(); it != _locations.end(); it++)
     {
+        if (_path.find(".") == std::string::npos && this->_location.getLocationPath() == "/" && _path != "/return")
+        {
+            this->_location = *it;
+            return 1;
+        }
         if (_path == it->getLocationPath())
         {
+            if (!it->getLocationPath().compare("/return"))
+                this->_statusCode = MOVED_PERMANENTLY;
             this->_location = *it;
             return 1;
         }
-        if (_path.find(".") == std::string::npos && it->getLocationPath() == "/")
-        {
-            this->_location = *it;
-            return 1;
-        }
+        std::cout << it->getLocationPath().compare("/return") << std::endl;
+        // if (_path.find(".") == std::string::npos && !it->getLocationPath().compare("/") && it->getLocationPath().compare("/return") != -1)
+        // {
+        //     this->_location = *it;
+        //     return 1;
+        // }
     }
     return 0;
 }
@@ -318,6 +326,7 @@ int     Response::CheckForMatchOne(std::string _path, std::vector<location> _loc
                 this->_location = *it;
                 return 1;
             }
+            // if (_path.find(".") == std::string::)
         }
     }
     return 0;
@@ -407,6 +416,20 @@ void    Response::PostMethod()
     }
 }
 
+// location Response::getRedirection(std::string locName)
+// {
+//     _request.setReqValue("Connection", "close");
+//     std::vector<location> vecLocation;
+//     for (std::map<std::string, location>::iterator it = this->_server.getLocations().begin(); it != this->_server.getLocations().end(); it++)
+//         vecLocation.push_back(it->second);
+//     for (size_t i = 0; i < vecLocation.size(); i++)
+//     {
+//         if (vecLocation[i].().compare(locName) == 0)
+//             return vecLocation[i];
+//         }
+//     return _location;
+// }
+
 void    Response::creatBody()
 {
     //*****************Find the right location and server information****************
@@ -476,45 +499,50 @@ void    Response::creatResponse(std::vector<serverINFO> &servers, Request &reque
     this->_servers = servers;
 
     this->creatBody();
-    if (!this->isCGI)
-    {
-    this->_headers.append("HTTP/1.1");
-    this->_headers.append(" ");
-    this->_headers.append(std::to_string(this->_statusCode));
-    this->_headers.append(" ");
-    this->_headers.append(getStatusCodeTranslate());
-    if (this->_statusCode == MOVED_PERMANENTLY)
-    {
-        this->_headers.append("Location: " + this->_redirectionLocation);
-        this->_headers.append("\r\n");
-        this->_headers.append("\r\n\r\n");
-    }
-    else
-    {
-        this->_headers.append("Server: webserv\r\n");
-        this->_headers.append("Date: " + tm.append("GMT"));
-        this->_headers.append("\r\n");
-        this->_headers.append("Connection: " + _request.getReqValue("Connection"));
-        this->_headers.append("\r\n");
-        this->_headers.append("Content-Type: " + getRespContentType());
-        if(this->_request.getReqValue("Transfer-Encoding").size())
+    std::cout << "statusCode = " << this->_statusCode << std::endl;
+    if (this->_location.getLocationReturnCode())
+        this->_statusCode = this->_location.getLocationReturnCode();
+        std::cout << "stauts:" << this->_statusCode << std::endl;
+        std::cout << "locaiton:" << this->_location.getLocationPath() << std::endl;
+        if (!this->isCGI)
         {
-            this->_headers.append("\r\n");
-            this->_headers.append("Transfer-Encoding: " + this->_request.getReqValue("Transfer-Encoding"));
-        }
-        else
-        {
-            this->_headers.append("\r\n");
-            this->_headers.append("Content-Length: " + std::to_string(this->_body.length()));
-        }
-        if (this->_request.getReqValue("cookie").size())
-        {
-            this->_headers.append("\r\n");
-            this->_headers.append("Set-cookie: " + this->_request.getReqValue("cookie"));
-        }
-        this->_headers.append("\r\n\r\n");
-        this->_headers.append(this->_body);
-    }
+            this->_headers.append("HTTP/1.1");
+            this->_headers.append(" ");
+            this->_headers.append(std::to_string(this->_statusCode));
+            this->_headers.append(" ");
+            this->_headers.append(getStatusCodeTranslate());
+            if (this->_statusCode == MOVED_PERMANENTLY)
+            {
+                this->_headers.append("Location: " + this->_location.getLocationReturnPath());
+                this->_headers.append("\r\n");
+                this->_headers.append("\r\n\r\n");
+            }
+            else
+            {
+                this->_headers.append("Server: webserv\r\n");
+                this->_headers.append("Date: " + tm.append("GMT"));
+                this->_headers.append("\r\n");
+                this->_headers.append("Connection: " + _request.getReqValue("Connection"));
+                this->_headers.append("\r\n");
+                this->_headers.append("Content-Type: " + getRespContentType());
+                if (this->_request.getReqValue("Transfer-Encoding").size())
+                {
+                    this->_headers.append("\r\n");
+                    this->_headers.append("Transfer-Encoding: " + this->_request.getReqValue("Transfer-Encoding"));
+                }
+                else
+                {
+                    this->_headers.append("\r\n");
+                    this->_headers.append("Content-Length: " + std::to_string(this->_body.length()));
+                }
+                if (this->_request.getReqValue("cookie").size())
+                {
+                    this->_headers.append("\r\n");
+                    this->_headers.append("Set-cookie: " + this->_request.getReqValue("cookie"));
+                }
+                this->_headers.append("\r\n\r\n");
+                this->_headers.append(this->_body);
+            }
     }
     std::cout << BYEL << "******************************** Response ********************************" << std::endl;
     std::cout << BRED << this->_headers << std::endl;

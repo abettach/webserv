@@ -41,6 +41,7 @@ public:
 	std::string	autoindex_run(std::string rooted_path);
 	std::string		getReqValue(std::string _key);
 	std::string		getUrl();
+	void	setTarget(std::string _target);
 	void	clear();
 
 };
