@@ -56,6 +56,7 @@ std::string    CGI::runCGI(Request _request, std::string root,  std::string cgi_
             ret = read(Ifd[0], buffer, 1024);
             content += buffer;
         }
+        sleep(20);
         close(Ifd[0]);
         waitpid(pid, nullptr, 0);
     }

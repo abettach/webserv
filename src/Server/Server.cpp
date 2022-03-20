@@ -442,25 +442,24 @@ void Server::responseHandling(int &accptSockFD)
 
 	Response _resp;
 	_resp.creatResponse(this->_servers, this->_request);
-	this->_request.clear();
 	// if (path.size() == 0 || path == "/")
 	// 	body = get_body("index.html");
 	// else
 	// 	body = get_body(path);
 	std::string all = std::string(header) + std::string(ft_itoa(_resp.GetBody().size())) + "\r\n\r\n" + _resp.GetBody();
-
+	
 	if (FD_ISSET(accptSockFD, &_writeFDs))
 	{
 		if (send(accptSockFD, _resp.getRespHeader().c_str(), _resp.getRespHeader().length(), 0) != (ssize_t)_resp.getRespHeader().length())
 			throw std::runtime_error("Unable to send the response to client in socket " + std::to_string(accptSockFD));
-		if (1) // if connection is set to close in request close
+		if (!_request.getReqValue("Connection").compare("close")) // if connection is set to close in request close
 		{
 			std::cout << "Disconnected socket: " << std::to_string(accptSockFD) << std::endl;
 			close(accptSockFD);
 			FD_CLR(accptSockFD, &_masterFDs);
 			FD_CLR(accptSockFD, &_writeFDs);
 		}
-		// _request.clearRequest();
-		// response.clearAll();
+	_resp.clear();
+	this->_request.clear();
 	}
 }
