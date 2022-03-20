@@ -1,10 +1,10 @@
 #ifndef RESPONSE_HPP
 #define RESPONSE_HPP
-#include "../../headers.hpp"
+#include "../utils/headers.hpp"
 #include "../Request/Request.hpp"
 #include "../Config/FileParss.hpp"
 #include "../Cgi/cgi.hpp"
-#include "../Request/StatusCode.hpp"
+#include "../Request/../utils/StatusCode.hpp"
 # include <unistd.h>
 #include <fstream>
 #include <sstream>

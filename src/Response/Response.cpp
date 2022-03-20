@@ -414,17 +414,23 @@ void    Response::PostMethod()
     std::string file_path;
     std::string buffer;
 
+    std::cout << this->_location.getLocationUploadEnable() << std::endl;
     if (!this->_location.getLocationUploadEnable())
         setErrorPage(UNAUTHORIZED);
     else
     {
         file_path = getUploadPath();
+        std::cout << file_path << std::endl;
         if (!isDirectory(file_path))
+        {
+            std::cout << "im in isdir" << std::endl;
             setErrorPage(NOT_FOUND);
+        }
         else
         {
             std::string fileName = file_path + '/' + this->_request.getReqValue("name");
             std::ifstream fileCheck(fileName);
+            std::cout << fileName << std::endl;
             if (fileCheck.is_open())
             {
                 fileCheck.close();
@@ -566,9 +572,9 @@ void    Response::creatResponse(std::vector<serverINFO> &servers, Request &reque
                 this->_headers.append(this->_body);
             }
     }
-    std::cout << BYEL << "******************************** Response ********************************" << std::endl;
+    std::cout << BYEL << "+++++++++++++++++++++++++++++ Response +++++++++++++++++++++++++++++++" << std::endl;
     std::cout << BRED << this->_headers << std::endl;
-    std::cout << BYEL <<"********************************* Response ********************************" << BWHT <<std::endl;
+    std::cout << BYEL << "+++++++++++++++++++++++++++++ Response +++++++++++++++++++++++++++++++" << BWHT <<std::endl;
 }
 
 void    Response::clear()

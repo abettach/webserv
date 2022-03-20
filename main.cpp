@@ -23,36 +23,16 @@ void    printServersINFO(std::vector<serverINFO> newServers)
 
 int     main(int ac, char **av)
 {
-    if (!strcmp(av[1], "parssing"))
+    try
     {
-        try
-        {
-            FileParss parss(ac, av);
-            Response resp;
-            //split all servers by port NB: use 'port' variable not 'ports' to get every server port
-            std::vector<serverINFO> newServers = parss.SplitServers();
-            Server server(newServers);
-        }
-        catch(const std::exception& e)
-        {
+        FileParss parss(ac, av);
+        //split all servers by port NB: use 'port' variable not 'ports' to get every server port
+        std::vector<serverINFO> newServers = parss.SplitServers();
+        Server server(newServers);
+    }
+    catch(const std::exception& e)
+    {
             std::cerr << e.what() << '\n';
-        }
-    }
-    else if (!strcmp(av[1], "request"))
-    {
-        std::string test = "NOne";
-        Request request;
-        request.Request_start(test);
-        // request.printRequestInformation();
-    }
-    else if (!strcmp(av[1], "response"))
-    {
-        Response response;
-    }
-    else if (!strcmp(av[1], "CGI"))
-    {
-        Request request;
-        CGI _cgi;
     }
     return 0;
 }

@@ -25,9 +25,14 @@ void	Request::printRequestInformation()
 	std::cout << "\e[1;32mTarget:\e[1;36m " << this->target<<"\e[1;37m" << std::endl;
 	std::cout << "\e[1;32mProtocol: \e[1;36m" << this->protocol <<"\e[1;37m"<< std::endl; 
 	for (std::map<std::string, std::string>::iterator it = this->headers.begin(); it != this->headers.end(); it++)
-		std::cout << "\e[1;32m" << it->first << ":\e[1;36m " << it->second <<"\e[1;37m" << std::endl;
-	std::cout << "\e[1;32mQuery: \e[1;36m" << this->queryUrl << "\e[1;37m" << std::endl;
-	std::cout << "\e[1;32mUrl: \e[1;36m" << this->url << "\e[1;37m" << std::endl;
+	{
+		if (!it->second.empty())
+			std::cout << "\e[1;32m" << it->first << ":\e[1;36m " << it->second <<"\e[1;37m" << std::endl;
+	}
+	if (!this->queryUrl.empty())
+		std::cout << "\e[1;32mQuery: \e[1;36m" << this->queryUrl << "\e[1;37m" << std::endl;
+	if (!this->url.empty())
+		std::cout << "\e[1;32mUrl: \e[1;36m" << this->url << "\e[1;37m" << std::endl;
 	std::cout << this->body << std::endl;
 }
 Request::Request() : _status(200), target(""), url(""), queryUrl("")
@@ -58,9 +63,9 @@ int		Request::Request_start(std::string _Request)
 			this->_status = ret;
 			return ret;
 		}
-	std::cout << BYEL <<"+++++++++++++++++++++++++++++Request+++++++++++++++++++++++++++++++" << BWHT <<std::endl;
+	std::cout << BYEL <<"+++++++++++++++++++++++++++++ Request ++++++++++++++++++++++++++++++++" << BWHT <<std::endl;
 	printRequestInformation();
-	std::cout << BYEL << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"<< BWHT << std::endl;
+	std::cout << BYEL << "+++++++++++++++++++++++++++++ Request ++++++++++++++++++++++++++++++++"<< BWHT << std::endl;
 
 	return 0;
 }
@@ -68,7 +73,7 @@ int		Request::Request_start(std::string _Request)
 int		Request::request_body()
 {
 	// std::cout << this->request << std::endl;
-	if (this->request.find("Boundary") != std::string::npos)
+	if (this->headers["Content-Type"].find("boundary") != std::string::npos && this->request.find("filename=") == std::string::npos)
 	{
 		if (this->request.find("Content-Disposition") != std::string::npos)
 		{
@@ -89,6 +94,35 @@ int		Request::request_body()
 			this->headers["value"] = this->value;
 		}
 
+	}
+	else if (this->headers["Content-Type"].find("boundary") != std::string::npos && this->request.find("filename=") != std::string::npos)
+	{
+		if (this->request.find("Content-Disposition") != std::string::npos)
+		{
+			this->request.erase(0, request.find("Content-Disposition") + 21);
+			ContentDiposition = this->request.substr(0,request.find(";"));
+			this->headers["Content-Disposition"] = ContentDiposition;
+			this->request.erase(0,request.find(";") + 1);
+			this->request.erase(0,request.find(";") + 2);
+		}
+		if (this->request.find("filename") != std::string::npos)
+		{
+			this->request.erase(0, request.find("\"") + 1);
+			this->name = this->request.substr(0, request.find("\""));
+			this->headers["name"] = this->name;
+			this->request.erase(0, request.find("\r\n") + 2);
+		}
+		if (this->request.find("Content-Type") != std::string::npos)
+		{
+			this->request.erase(0, request.find(":") + 2);
+			this->contentType = this->request.substr(0, request.find("\r\n"));
+			this->headers["ContentType"] = this->contentType;
+			this->request.erase(0, request.find("\r\n\r\n") + 4);
+			std::cout << this->request << std::endl;
+		}
+		this->value = this->request.substr(0, request.find("-") - 2);
+		this->headers["value"] = this->value;
+		// std::cout <<
 	}
 	else
 	{

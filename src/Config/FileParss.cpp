@@ -400,16 +400,12 @@ std::vector<serverINFO>    FileParss::SplitServers()
 //check the validiti of argument normale usage [./webserv config.conf]
 void    FileParss::Arguments_checker(int ac, char **av)
 {
-    //for now i use only the config.conf because i need to use the first arg for other things ;)
-    // if (ac > 2)
-    // {
-    //     throw std::runtime_error("Error: Check your Arguments!");
-    // }
-    // if (av[1])
-    //     this->file_name = av[1];
-    // else
+    if (ac > 2)
+        throw std::runtime_error("Error: Check your Arguments!");
+    if (av[1])
+        this->file_name = av[1];
+    else
         this->file_name = "conf/config.conf";
-    std::string extention = &this->file_name[static_cast<int>(this->file_name.find(".") + 1)];
 }
 
 int    isspace(char c)

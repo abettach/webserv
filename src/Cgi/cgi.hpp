@@ -1,6 +1,6 @@
 #ifndef CGI_HPP
 #define CGI_HPP
-#include "../../headers.hpp"
+#include "../utils/headers.hpp"
 #include "../Request/Request.hpp"
 
 class Request;

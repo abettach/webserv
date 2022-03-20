@@ -1,7 +1,7 @@
 #ifndef REQUEST_HPP
 #define REQUEST_HPP
-#include "../../headers.hpp"
-#include "StatusCode.hpp"
+#include "../utils/headers.hpp"
+#include "../utils/StatusCode.hpp"
 #define REQUEST_URI_MAX_LENGTH 2084
 #define HEADER_MAX_LENGTH 1000
 #define VALUE_MAX_LENGTH 4000
@@ -22,6 +22,8 @@ private:
 	std::string name;
 	std::string value;
 	int			port;
+	std::string fileName;
+	std::string contentType;
 	std::map<std::string, std::string> headers;
 
 public:
