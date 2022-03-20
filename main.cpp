@@ -31,9 +31,7 @@ int     main(int ac, char **av)
             Response resp;
             //split all servers by port NB: use 'port' variable not 'ports' to get every server port
             std::vector<serverINFO> newServers = parss.SplitServers();
-            // printServersINFO(newServers);
             Server server(newServers);
-            // std::cout << _cgi.runCGI(request, root, cgi_path) << std::endl;
         }
         catch(const std::exception& e)
         {

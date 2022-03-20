@@ -20,13 +20,10 @@ std::string    CGI::runCGI(Request _request, std::string root,  std::string cgi_
     setenv("SERVER_NAME", "webserv", 1);
     setenv("REDIRECT_STATUS", "1", 1);
     setenv("PATH_INFO", "/Users/abettach/Desktop/webserv", 1);
-    std::cout << "my file name = " <<( root + _request.getTarget()).c_str() << std::endl;
     setenv("SCRIPT_FILENAME", (root + _request.getTarget()).c_str(), 1);//root + _req.getTarget()
     // setenv("QUERY_STRING", /*get the query string from the request*/, 1);
     if (pipe(Ifd) || pipe(Ofd))
         perror("[CGI ERROR] PIPE");
-    // for (size_t i = 0; environ[i] ; i++)
-    //     std::cout << environ[i] << std::endl;
     pid = fork();
     if (!pid)
     {
@@ -56,7 +53,6 @@ std::string    CGI::runCGI(Request _request, std::string root,  std::string cgi_
             ret = read(Ifd[0], buffer, 1024);
             content += buffer;
         }
-        sleep(20);
         close(Ifd[0]);
         waitpid(pid, nullptr, 0);
     }

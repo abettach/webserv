@@ -265,7 +265,7 @@ int		&Request::getPort()
 	if (tmp.find(":") != std::string::npos)
 	{
 		tmp.erase(0, tmp.find(":") + 1);
-		this->port = std::stoi(tmp);
+		this->port = atoi(tmp.c_str());
 	}
 	else
 		this->port = 80;

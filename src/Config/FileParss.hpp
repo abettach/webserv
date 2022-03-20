@@ -84,21 +84,4 @@ class FileParss
         bool    isValideMethod(std::string tmp);
 };
 
-template <typename T>
-void    _print(T &var, std::string type)
-{
-    if(type == "vector")
-    {
-        for (size_t i = 0; i < var.size(); i++)
-            std::cout << var[i] << std::endl;
-    }
-    else if (type == "string")
-    {
-        for (size_t i = 0; i < var.size(); i++)
-            std::cout << var[i];
-        std::cout << std::endl;
-    }
-}
-
-
 #endif//

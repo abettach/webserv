@@ -60,6 +60,7 @@ public:
     void    PostMethod();
     std::string getUploadPath();
     location getRedirection(std::string locName);
+    std::string getDefaultPage();
     ~Response();
 };
 

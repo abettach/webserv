@@ -96,7 +96,6 @@ void Server::makeSockets()
 	{
 		_ports = itServer->getPorts();
 		_host = itServer->getHost();
-		std::cout << _ports[2] << std::endl;
 		for (std::vector<int>::iterator itPort = _ports.begin(); itPort != _ports.end(); ++itPort)
 		{
 			_port = *itPort;
@@ -143,8 +142,7 @@ void Server::bindSocket()
 	_serverAddr.sin_family = AF_INET;
 	_serverAddr.sin_port = htons(_port);
 	_serverAddr.sin_addr.s_addr = (_host == "ANY") ? htonl(INADDR_ANY) : inet_addr(_host.c_str());
-	if (bind(_masterSockFD, (struct sockaddr *)&_serverAddr, sizeof(_serverAddr)) == -1)
-		throw std::runtime_error("Unable to bind the socket " + std::to_string(_masterSockFD) + " with " + _host + ":" + std::to_string(_port) + ": Already used");
+	bind(_masterSockFD, (struct sockaddr *)&_serverAddr, sizeof(_serverAddr));
 }
 
 // Listen for incoming connections from clients
@@ -212,7 +210,6 @@ void Server::waitingForConnections()
 void Server::newConnectHandling(int &sockFD)
 {
 	std::cout << "new connection" << std::endl;
-
 	int accptSockFD = accept(sockFD, (struct sockaddr *)&_clientAddr, &_addrLen);
 	if (accptSockFD == -1)
 		throw std::runtime_error("Unable to accept the connection from client by the socket " + std::to_string(accptSockFD));
@@ -263,7 +260,7 @@ void Server::newConnectHandling(int &sockFD)
 // 		{
 // 			try
 // 			{
-// 				size_t length = std::stoi(headers.substr(headers.find("Content-Length: ") + 16));
+// 				size_t length = atoi(headers.substr(headers.find("Content-Length: ") + 16));
 // 				std::string body = buffReq.substr(buffReq.find("\r\n\r\n") + 4);
 
 // 				if (length > (size_t)_mbs)
@@ -286,7 +283,6 @@ void Server::accptedConnectHandling(int &accptSockFD)
 	char _buffRes[BUFFER_SIZE + 1] = {0};
 	bzero(_buffRes, sizeof(_buffRes));
 	int valRead = recv(accptSockFD, _buffRes, BUFFER_SIZE, 0);
-	// std::cout << _buffRes << std::endl;
 	std::cout << "Activity in socket " << std::to_string(accptSockFD) << ", address: " << inet_ntoa(_clientAddr.sin_addr) << ':' << std::to_string(ntohs(_clientAddr.sin_port)) << std::endl;
 	if (valRead > 0)
 	{
@@ -303,7 +299,6 @@ void Server::accptedConnectHandling(int &accptSockFD)
 	}
 	if (valRead == 0)
 	{
-		std::cout << "Client Disconnected socket: " << std::to_string(accptSockFD) << std::endl;
 		close(accptSockFD);
 		FD_CLR(accptSockFD, &_masterFDs);
 		FD_CLR(accptSockFD, &_writeFDs);
@@ -433,33 +428,27 @@ char *Server::ft_itoa(int n)
 
 void Server::responseHandling(int &accptSockFD)
 {
-	// Response response(this->_request, _server, _portServer);
 	std::string body;
 	std::string path = _request.getTarget().erase(0, 1);
-	// if (_request.getTarget().compare(0, _request.getTarget().size(), ""))
-	// 	std::cout << _request.getPort() << std::endl;
 	char *header = strdup("HTTP/1.1 200 OK\r\nContent-Length: ");
 
 	Response _resp;
 	_resp.creatResponse(this->_servers, this->_request);
-	// if (path.size() == 0 || path == "/")
-	// 	body = get_body("index.html");
-	// else
-	// 	body = get_body(path);
+	this->_request.clear();
+
 	std::string all = std::string(header) + std::string(ft_itoa(_resp.GetBody().size())) + "\r\n\r\n" + _resp.GetBody();
-	
+
 	if (FD_ISSET(accptSockFD, &_writeFDs))
 	{
 		if (send(accptSockFD, _resp.getRespHeader().c_str(), _resp.getRespHeader().length(), 0) != (ssize_t)_resp.getRespHeader().length())
 			throw std::runtime_error("Unable to send the response to client in socket " + std::to_string(accptSockFD));
-		if (!_request.getReqValue("Connection").compare("close")) // if connection is set to close in request close
+		if (!this->_request.getReqValue("Connection").compare("close")) // if connection is set to close in request close
 		{
-			std::cout << "Disconnected socket: " << std::to_string(accptSockFD) << std::endl;
 			close(accptSockFD);
 			FD_CLR(accptSockFD, &_masterFDs);
 			FD_CLR(accptSockFD, &_writeFDs);
 		}
+	}
 	_resp.clear();
 	this->_request.clear();
-	}
 }

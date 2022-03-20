@@ -58,7 +58,7 @@ int     main(int ac, char **av)
     //binding the socket |int bind(int socket, const struct sockaddr *address, socklen_t address_len);|
     struct sockaddr_in address;
     std::string str(av[1], strlen(av[1]));
-    const int PORT = std::stoi(str);
+    const int PORT = atoi(str);
     memset((char *)&address, 0, sizeof(address));
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
@@ -95,7 +95,6 @@ int     main(int ac, char **av)
         
         char buffer[1000] = {0};
         valread = read( new_socket , buffer, 30000);
-        // std::cout << buffer << std::endl;
         write(new_socket , all.c_str() , strlen(all.c_str()));
         printf("------------------Hello message sent-------------------\n");
         close(new_socket);

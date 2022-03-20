@@ -42,7 +42,7 @@ void    FileParss::run_ports(std::string &tmp, serverINFO &sv)
     for (size_t i = 0; i < tmp.size(); i++)
         if (tmp[i] < '0' || tmp[i] > '9')
             throw std::runtime_error("Error: Check Your Ports!");
-    sv.addPorts(std::stoi(tmp));
+    sv.addPorts(atoi(tmp.c_str()));
 }
 
 void    FileParss::run_error_pages(std::string &tmp, serverINFO &sv)
@@ -54,8 +54,8 @@ void    FileParss::run_error_pages(std::string &tmp, serverINFO &sv)
     for (size_t i = 0; tmp[i] != ' '; i++)
         if (tmp[i] < '0' || tmp[i] > '9')
             throw std::runtime_error("Error: Check Your ERROR_PAGE!");
-    int error_num = std::stoi(tmp); // stoi cpp11
-    std::string num = std::to_string(std::stoi(tmp)); // t_string -42 cpp11
+    int error_num = atoi(tmp.c_str()); // stoi cpp11
+    std::string num = std::to_string(atoi(tmp.c_str())); // t_string -42 cpp11
     tmp.erase(0,strlen(num.c_str()));
     ft_strtrim(tmp);
     if (tmp.empty())
@@ -120,7 +120,7 @@ void    FileParss::run_body_size(std::string &tmp, serverINFO &sv)
     for (size_t i =0; i < tmp.size() - 1 ;i++)
         if (tmp[i] < '0' || tmp[i] > '9')
             throw std::runtime_error("Error: Check Your CLIENT_BODY_SIZE!");
-    int num = std::stoi(tmp);
+    int num = atoi(tmp.c_str());
     sv.setClienBodySize(num);
 }
 
@@ -185,8 +185,7 @@ void    FileParss::locationReturn(std::string &tmp, location &sv_loc)
         throw std::runtime_error("Error: Check You Location return!");
     else
     {
-        std::cout << "tmp =" << std::endl;
-        _return = std::stoi(tmp);
+        _return = atoi(tmp.c_str());
         sv_loc.setLocationReturnCode(_return);
 
         tmp.erase(0, std::to_string(_return).size());
