@@ -1,6 +1,6 @@
 #include "serverINFO.hpp"
 
-serverINFO::serverINFO(/* args */)
+serverINFO::serverINFO()
 {
     this->client_max_body_size = -1;
     this->server_name = "";

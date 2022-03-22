@@ -1,34 +1,23 @@
 #include "Server.hpp"
 #include "../Cgi/cgi.hpp"
 // Default constructor
-Server::Server() : running(1),
-				   _masterSockFD(0),
+Server::Server() : _masterSockFD(0),
 				   _port(0),
 				   _host(""),
 				   _addrLen(0),
 				   _maxSockFD(0),
-				   _isChunked(false),
-				   _contentLength(0),
-				   _portServer(0),
-				   _mbs(0),
 				   _isvalid(1)
 {
 }
 
-Server::Server(std::vector<serverINFO> &servers) : running(1),
-												   _servers(servers),
+Server::Server(std::vector<serverINFO> &servers) :_servers(servers),
 												   _masterSockFD(0),
 												   _port(0),
 												   _host(""),
 												   _addrLen(0),
 												   _maxSockFD(0),
-												   _isChunked(false),
-												   _contentLength(0),
-												   _portServer(0),
-												   _mbs(0),
 												   _isvalid(1)
 {
-	// _servers.assign(parser.getServers().begin(), parser.getServers().end());
 	this->makeSockets();
 	this->waitingForConnections();
 }
@@ -59,7 +48,6 @@ Server &Server::operator=(Server const &ths)
 {
 	if (this != &ths)
 	{
-		// this->_parser = ths._parser;
 		this->_servers = ths._servers;
 		this->_masterSockFDs = ths._masterSockFDs;
 		this->_masterSockFD = ths._masterSockFD;
@@ -75,11 +63,6 @@ Server &Server::operator=(Server const &ths)
 		this->_maxSockFD = ths._maxSockFD;
 		this->_clients = ths._clients;
 		this->_accptMaster = ths._accptMaster;
-		// this->_request = ths._request;
-		this->_isChunked = ths._isChunked;
-		this->_contentLength = ths._contentLength;
-		// this->_server = ths._server;
-		this->_mbs = ths._mbs;
 		this->_isvalid = ths._isvalid;
 	}
 	return *this;

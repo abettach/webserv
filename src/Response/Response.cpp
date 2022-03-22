@@ -1,9 +1,6 @@
 #include "Response.hpp"
 
-Response::Response(/* args */) : _statusCode(200) , _headers("")
-{
-    // this->_status = this->_request.getStatusCode();
-}
+Response::Response() : _headers(""), _statusCode(200){}
 
 std::string     Response::getRespHeader()
 {
@@ -177,7 +174,6 @@ void    Response::parseCgiResp(std::string &cgiResp)
 	this->_headers.append(std::to_string(this->_statusCode));
 	this->_headers.append(" ");
 	this->_headers.append(this->getStatusCodeTranslate());
-	// this->_headers.append("\r\n");
 	this->_headers.append("Server: Webserv\r\n");
 	this->_headers.append("Date: " + tm.append(" GMT"));
 	this->_headers.append("\r\n");
@@ -269,8 +265,17 @@ void    Response::getMethod(std::string _uri)
             if (file.is_open())
             {
                 file.close();   
-                this->_body = _cgi.runCGI(this->_request, this->_server.getRootDir(), this->_location.getLocationFastCgiPass());
-                parseCgiResp(this->_body);
+                if (access((this->_server.getRootDir() + this->_request.getTarget()).c_str(), F_OK) == -1 || access((this->_server.getRootDir() + this->_request.getTarget()).c_str(), W_OK) == -1)
+                {
+                    this->isCGI = false;
+                    setErrorPage(NOT_FOUND);
+                    return;
+                }
+                else
+                {
+                    this->_body = _cgi.runCGI(this->_request, this->_server.getRootDir(), this->_location.getLocationFastCgiPass());
+                    parseCgiResp(this->_body);
+                }
             }
             else
             {
@@ -356,7 +361,6 @@ int     Response::CheckForMatchOne(std::string _path, std::vector<location> _loc
                 this->_location = *it;
                 return 1;
             }
-            // if (_path.find(".") == std::string::)
         }
     }
     return 0;
@@ -414,23 +418,17 @@ void    Response::PostMethod()
     std::string file_path;
     std::string buffer;
 
-    std::cout << this->_location.getLocationUploadEnable() << std::endl;
     if (!this->_location.getLocationUploadEnable())
         setErrorPage(UNAUTHORIZED);
     else
     {
         file_path = getUploadPath();
-        std::cout << file_path << std::endl;
         if (!isDirectory(file_path))
-        {
-            std::cout << "im in isdir" << std::endl;
             setErrorPage(NOT_FOUND);
-        }
         else
         {
             std::string fileName = file_path + '/' + this->_request.getReqValue("name");
             std::ifstream fileCheck(fileName);
-            std::cout << fileName << std::endl;
             if (fileCheck.is_open())
             {
                 fileCheck.close();
@@ -449,23 +447,8 @@ void    Response::PostMethod()
     }
 }
 
-// location Response::getRedirection(std::string locName)
-// {
-//     _request.setReqValue("Connection", "close");
-//     std::vector<location> vecLocation;
-//     for (std::map<std::string, location>::iterator it = this->_server.getLocations().begin(); it != this->_server.getLocations().end(); it++)
-//         vecLocation.push_back(it->second);
-//     for (size_t i = 0; i < vecLocation.size(); i++)
-//     {
-//         if (vecLocation[i].().compare(locName) == 0)
-//             return vecLocation[i];
-//         }
-//     return _location;
-// }
-
 void    Response::creatBody()
 {
-    //*****************Find the right location and server information****************
     std::string RequestPath = this->_request.getTarget();
     this->isLocation = false;
     this->isCGI = false;
@@ -528,49 +511,46 @@ void    Response::creatResponse(std::vector<serverINFO> &servers, Request &reque
     tm.pop_back();
     this->_request = request;
     this->_servers = servers;
-
     this->creatBody();
-    if (this->_location.getLocationReturnCode())
-        this->_statusCode = this->_location.getLocationReturnCode();
-        if (!this->isCGI)
+    if (!this->isCGI)
+    {
+        this->_headers.append("HTTP/1.1");
+        this->_headers.append(" ");
+        this->_headers.append(std::to_string(this->_statusCode));
+        this->_headers.append(" ");
+        this->_headers.append(getStatusCodeTranslate());
+        if (this->_statusCode == MOVED_PERMANENTLY)
         {
-            this->_headers.append("HTTP/1.1");
-            this->_headers.append(" ");
-            this->_headers.append(std::to_string(this->_statusCode));
-            this->_headers.append(" ");
-            this->_headers.append(getStatusCodeTranslate());
-            if (this->_statusCode == MOVED_PERMANENTLY)
+            this->_headers.append("Location: " + this->_location.getLocationReturnPath());
+            this->_headers.append("\r\n");
+            this->_headers.append("\r\n\r\n");
+        }
+        else
+        {
+            this->_headers.append("Server: webserv\r\n");
+            this->_headers.append("Date: " + tm.append("GMT"));
+            this->_headers.append("\r\n");
+            this->_headers.append("Connection: " + _request.getReqValue("Connection"));
+            this->_headers.append("\r\n");
+            this->_headers.append("Content-Type: " + getRespContentType());
+            if (this->_request.getReqValue("Transfer-Encoding").size())
             {
-                this->_headers.append("Location: " + this->_location.getLocationReturnPath());
                 this->_headers.append("\r\n");
-                this->_headers.append("\r\n\r\n");
+                this->_headers.append("Transfer-Encoding: " + this->_request.getReqValue("Transfer-Encoding"));
             }
             else
             {
-                this->_headers.append("Server: webserv\r\n");
-                this->_headers.append("Date: " + tm.append("GMT"));
                 this->_headers.append("\r\n");
-                this->_headers.append("Connection: " + _request.getReqValue("Connection"));
-                this->_headers.append("\r\n");
-                this->_headers.append("Content-Type: " + getRespContentType());
-                if (this->_request.getReqValue("Transfer-Encoding").size())
-                {
-                    this->_headers.append("\r\n");
-                    this->_headers.append("Transfer-Encoding: " + this->_request.getReqValue("Transfer-Encoding"));
-                }
-                else
-                {
-                    this->_headers.append("\r\n");
-                    this->_headers.append("Content-Length: " + std::to_string(this->_body.length()));
-                }
-                if (this->_request.getReqValue("cookie").size())
-                {
-                    this->_headers.append("\r\n");
-                    this->_headers.append("Set-cookie: " + this->_request.getReqValue("cookie"));
-                }
-                this->_headers.append("\r\n\r\n");
-                this->_headers.append(this->_body);
+                this->_headers.append("Content-Length: " + std::to_string(this->_body.length()));
             }
+            if (this->_request.getReqValue("Cookie").size())
+            {
+                this->_headers.append("\r\n");
+                this->_headers.append("Set-cookie: " + this->_request.getReqValue("Cookie"));
+            }
+            this->_headers.append("\r\n\r\n");
+            this->_headers.append(this->_body);
+        }
     }
     std::cout << BYEL << "+++++++++++++++++++++++++++++ Response +++++++++++++++++++++++++++++++" << std::endl;
     std::cout << BRED << this->_headers << std::endl;

@@ -54,8 +54,8 @@ void    FileParss::run_error_pages(std::string &tmp, serverINFO &sv)
     for (size_t i = 0; tmp[i] != ' '; i++)
         if (tmp[i] < '0' || tmp[i] > '9')
             throw std::runtime_error("Error: Check Your ERROR_PAGE!");
-    int error_num = atoi(tmp.c_str()); // stoi cpp11
-    std::string num = std::to_string(atoi(tmp.c_str())); // t_string -42 cpp11
+    int error_num = atoi(tmp.c_str()); 
+    std::string num = std::to_string(atoi(tmp.c_str()));
     tmp.erase(0,strlen(num.c_str()));
     ft_strtrim(tmp);
     if (tmp.empty())
@@ -79,8 +79,7 @@ void    FileParss::run_root_dir(std::string &tmp, serverINFO &sv)
         if (tmp[i] == ' ' || tmp[i] == '\t')
             throw std::runtime_error("Error: Check Your Root!");
     std::ifstream file(tmp.c_str());
-    // if (!file.is_open())
-    //     throw std::runtime_error("Error: Error Page [" + tmp +"] Dosnt Exist!");
+
     sv.setRootDir(tmp);
 }
 void    FileParss::run_server_name(std::string &tmp, serverINFO &sv)
@@ -403,7 +402,13 @@ void    FileParss::Arguments_checker(int ac, char **av)
     if (ac > 2)
         throw std::runtime_error("Error: Check your Arguments!");
     if (av[1])
-        this->file_name = av[1];
+    {
+        std::ifstream file(av[1]);
+        if (file)
+            this->file_name = av[1];
+        else
+            throw std::runtime_error("Error: Check your Arguments!");
+    }
     else
         this->file_name = "conf/config.conf";
 }
@@ -419,7 +424,6 @@ std::vector<std::string> FileParss::ft_split(std::string const &str, char c)
 	std::stringstream ss(str);
 	std::string buff;
 
-    size_t i = 0;
 	while (getline(ss, buff, c))
 		new_str.push_back(buff);
 	return new_str;

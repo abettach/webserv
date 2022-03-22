@@ -20,13 +20,6 @@
 #include "../Config/FileParss.hpp"
 #include "../Request/Request.hpp"
 #include "../Response/Response.hpp"
-
-
-// #include "HttpServer.hpp"
-// #include "Cgi.hpp"
-// #include "Request.hpp"
-// class Request;
-// #include "Response.hpp"
 class serverINFO;
 class Request;
 #define BUFFER_SIZE 1024
@@ -35,13 +28,9 @@ class Request;
 class Server
 {
 private:
-	// ConfigFileParser _parser;
-
-	// Servers
 	std::vector<serverINFO> _servers;
 	Request _request;
 	// Making sockets
-	int running;
 	int _masterSockFD;
 	std::vector<int> _masterSockFDs;
 	std::vector<int> _ports;
@@ -66,15 +55,8 @@ private:
 
 	// first is accept socket ; second is master socket
 	std::map<int, int> _accptMaster;
-	// Request _request;
-
-	// Chunked request
-	bool _isChunked;
-	size_t _contentLength;
 
 	// HttpServer _server;
-	short _portServer;
-	int _mbs;
 	int _isvalid;
 
 public:
@@ -94,9 +76,6 @@ public:
 	void newConnectHandling(int &);
 	void accptedConnectHandling(int &);
 	void responseHandling(int &);
-	// void getServerBySocket(int &, HttpServer *, short *);
-	// bool detectEndRequest(std::string &, int &);
-	// std::string unchunkingRequest(std::string &body);
 };
 
 #endif

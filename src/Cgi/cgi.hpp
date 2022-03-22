@@ -9,7 +9,7 @@ class CGI
 {
 private:
 public:
-    CGI(/* args */);
+    CGI();
     std::string    runCGI(Request , std::string , std::string );
     ~CGI();
 };

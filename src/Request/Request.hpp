@@ -14,7 +14,6 @@ private:
 	std::string target;
 	std::string protocol;
 	std::string queryUrl;
-	std::string bounday_body;
 	std::string body;
 	std::string url;
 	int		_status;

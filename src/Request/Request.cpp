@@ -1,23 +1,5 @@
 #include "Request.hpp"
 #include "../Cgi/cgi.hpp"
-/*********************************Request*******************************/
-std::string MYREQUEST =
-"GET /favicon.ico HTTP/1.1\r\n\
-Host: localhost:8800\r\n\
-Connection: keep-alive\r\n\
-sec-ch-ua: 'Not A;Brand';v='99', 'Chromium';v='96', 'Google Chrome';v='96'\r\n\
-sec-ch-ua-mobile: ?0\r\n\
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36\r\n\
-sec-ch-ua-platform: 'macOS'\r\n\
-Accept: image/avif,image/webp,image/apng,image/svg+xml,image/,/*;q=0.8\r\n\
-Sec-Fetch-Site: same-origin\r\n\
-Sec-Fetch-Mode: no-cors \r\n\
-Sec-Fetch-Dest: image\r\n\
-Referer: http://localhost:8800/\r\n\
-Accept-Encoding: gzip, deflate, br\r\n\
-Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7\r\n";
-/************************************************************************/
-
 
 void	Request::printRequestInformation()
 {
@@ -35,7 +17,7 @@ void	Request::printRequestInformation()
 		std::cout << "\e[1;32mUrl: \e[1;36m" << this->url << "\e[1;37m" << std::endl;
 	std::cout << this->body << std::endl;
 }
-Request::Request() : _status(200), target(""), url(""), queryUrl("")
+Request::Request() : target(""), queryUrl(""), url(""), _status(200)
 {
 	this->headers.clear();
 }
@@ -72,7 +54,6 @@ int		Request::Request_start(std::string _Request)
 
 int		Request::request_body()
 {
-	// std::cout << this->request << std::endl;
 	if (this->headers["Content-Type"].find("boundary") != std::string::npos && this->request.find("filename=") == std::string::npos)
 	{
 		if (this->request.find("Content-Disposition") != std::string::npos)
@@ -122,7 +103,6 @@ int		Request::request_body()
 		}
 		this->value = this->request.substr(0, request.find("-") - 2);
 		this->headers["value"] = this->value;
-		// std::cout <<
 	}
 	else
 	{
@@ -140,15 +120,12 @@ int		Request::request_body()
 			}
 		}
 	}
-	std::cout << body  << std::endl;
 	return EXIT_SUCCESS;
 }
 
 int		Request::request_line()
 {
 	std::string Method;
- 	bool _m = false;
-
 	if (request.find("\r\n") != std::string::npos)
 	{
 		std::string tmp = request.substr(0, request.find(' '));
@@ -210,7 +187,7 @@ std::string rtrim(const std::string &s)
 	return (end == std::string::npos) ? "" : s.substr(0, end + 1);
 }
 
-std::string trim(const std::string &s, std::string dil = " ")
+std::string trim(const std::string &s)
 {
 	return rtrim(ltrim(s));
 }

@@ -1,20 +1,12 @@
-# Import modules for CGI handling 
-import cgi, cgitb 
-
-# Create instance of FieldStorage 
-form = cgi.FieldStorage() 
-
-# Get data from fields
-first_name = form.getvalue('fname')
-last_name  = form.getvalue('lname')
-
+name = "web"
+lastName = "server"
 print ("Content-type:text/html\r\n\r\n")
 print ("<html>")
 print ("<head>")
 print ("<title>Hello - Second CGI Program</title>")
 print ("</head>")
 print ("<body>")
-print ("<h2>First Name: %s</h2>" % (first_name))
-print ("<h2>Last  Name: %s</h2>" % (last_name))
+print ("<center><h2 style='color:dodgerblue; font-size:50px; margin-top:400px'>First Name:  " + name + "</h2>")
+print ("<h2 style='color:dodgerblue; font-size:50px'>Last  Name:  " + lastName + "</h2></center>")
 print ("</body>")
 print ("</html>")

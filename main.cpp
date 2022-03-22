@@ -1,4 +1,3 @@
-// #include "src/HTTPServer/HTTPserver.hpp"
 #include "src/Server/Server.hpp"
 #include "src/Config/FileParss.hpp"
 #include "src/Request/Request.hpp"
@@ -26,7 +25,6 @@ int     main(int ac, char **av)
     try
     {
         FileParss parss(ac, av);
-        //split all servers by port NB: use 'port' variable not 'ports' to get every server port
         std::vector<serverINFO> newServers = parss.SplitServers();
         Server server(newServers);
     }

@@ -18,22 +18,19 @@ class Request;
 class Response
 {
 private:
-    Request _request;
+    std::map<int , std::string> _errors;
     std::vector<serverINFO> _servers;
-    bool isCGI;
-    bool isLocation;
+    Request _request;
+    serverINFO _server;
+    location _location;
     CGI _cgi;
     std::string _body;
     std::string _statusLine;
     std::string _headers;
-    std::string _httpVersion;
-    int         _statusCode;
-    std::string _reasonPhrase;
-    location _location;
     std::string _resp;
-    serverINFO _server;
-    std::string _redirectionLocation;
-    std::map<int , std::string> _errors;
+    int         _statusCode;
+    bool isCGI;
+    bool isLocation;
 
 public:
     Response(/* args */);
